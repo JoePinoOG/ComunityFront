@@ -1,20 +1,88 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-tabs>
+    <ion-tab tab="home">
+      <div id="home-page">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Home</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <div class="example-content">aqui va el contenido del home</div>
+        </ion-content>
+      </div>
+    </ion-tab>
+    <ion-tab tab="Reuniones">
+      <div id="Reuniones-page">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Reuniones</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <div class="example-content">contenido de las reuniones</div>
+        </ion-content>
+      </div>
+    </ion-tab>
+    <ion-tab tab="Contacto">
+      <div id="Contacto-page">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Contacto</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <div class="example-content">contenido contacto directiva</div>
+        </ion-content>
+      </div>
+    </ion-tab>
+    <ion-tab tab="Publicar">
+      <div id="Publicar-page">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Publicar</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <div class="example-content">Contenido publicitado</div>
+        </ion-content>
+      </div>
+    </ion-tab>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-</ion-content>
+    <ion-tab tab="Anuncios">
+        <div id="Anuncios-page">
+          <ion-header>
+            <ion-toolbar>
+              <ion-title>Anuncios</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content>
+            <div class="example-content">aqui va el contenido de anuncios</div>
+          </ion-content>
+        </div>
+      </ion-tab>
+
+  
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="home">
+        <ion-icon name="play-circle"></ion-icon>
+        Inicio
+      </ion-tab-button>
+      <ion-tab-button tab="Reuniones">
+        <ion-icon name="radio"></ion-icon>
+        Reuniones
+      </ion-tab-button>
+      <ion-tab-button tab="Contacto">
+        <ion-icon name="library"></ion-icon>
+        Contacto
+      </ion-tab-button>
+      <ion-tab-button tab="Publicar">
+        <ion-icon name="search"></ion-icon>
+        Publicar
+      </ion-tab-button>
+        <ion-tab-button tab="Anuncios">
+            <ion-icon name="megaphone"></ion-icon>
+            Anuncios
+        </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
