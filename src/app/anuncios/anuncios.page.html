@@ -1,0 +1,24 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Anuncios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngFor="let publicacion of publicaciones; let i = index" class="publicacion">
+    <ion-card>
+      <ion-card-content>
+        <p>{{ publicacion.texto }}</p>
+        <img *ngIf="publicacion.imagen" [src]="publicacion.imagen" alt="Imagen de la publicación" />
+        <ion-icon 
+          name="trash-outline" 
+          color="danger" 
+          size="large" 
+          style="cursor: pointer;" 
+          (click)="borrarPublicacion(i)">
+        </ion-icon>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

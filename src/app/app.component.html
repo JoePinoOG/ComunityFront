@@ -1,3 +1,27 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
+<ion-tabs>
+  <ion-tab-bar slot="bottom" *ngIf="showTabBar">
+    <ion-tab-button routerLink="/home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+    <ion-tab-button routerLink="/reuniones">
+      <ion-icon name="today-outline"></ion-icon>
+      <ion-label>Reuniones</ion-label>
+    </ion-tab-button>
+    <ion-tab-button routerLink="/contacto">
+      <ion-icon name="call-outline"></ion-icon>
+      <ion-label>Contacto</ion-label>
+    </ion-tab-button>
+    <ion-tab-button routerLink="/publicar">
+      <ion-icon name="share-outline"></ion-icon>
+      <ion-label>Publicar</ion-label>
+    </ion-tab-button>
+    <ion-tab-button routerLink="/anuncios">
+      <ion-icon name="megaphone"></ion-icon>
+      <ion-label>Anuncios</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
 </ion-app>

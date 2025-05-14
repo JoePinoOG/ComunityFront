@@ -1,0 +1,11 @@
+.datetime-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: top; /* Centra verticalmente */
+  height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura */
+}
+
+ion-datetime {
+  max-width: 300px; /* Opcional: ajusta el ancho máximo */
+  width: 100%; /* Asegúrate de que se ajuste al contenedor */
+}

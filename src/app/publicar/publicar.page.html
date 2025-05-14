@@ -1,0 +1,23 @@
+<ion-tabs>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Publicar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (submit)="crearPublicacion()">
+    <ion-item>
+      <ion-label position="stacked">Texto de la publicación</ion-label>
+      <ion-textarea placeholder="Escribe algo..." [(ngModel)]="publicacionTexto" name="texto"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Agregar una foto</ion-label>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+    </ion-item>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top">Publicar</ion-button>
+  </form>
+</ion-content>
+</ion-tabs>

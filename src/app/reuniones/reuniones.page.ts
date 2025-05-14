@@ -13,19 +13,24 @@ import {  IonContent,
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { library, playCircle, radio, search, settings, megaphone } from 'ionicons/icons';
+import { IonDatetime } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
+  selector: 'app-reuniones',
+  templateUrl: './reuniones.page.html',
+  styleUrls: ['./reuniones.page.scss'],
   standalone: true,
-  imports: [RouterLink,IonContent, IonHeader, IonIcon, IonTab, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar]
+  imports: [
+    RouterLink,IonContent,
+    IonHeader, IonIcon, IonTab, 
+    IonTabBar, IonTabButton, IonTabs,
+    IonTitle, IonToolbar,IonDatetime
+  ]
 })
-export class HomePage implements OnInit {
+export class ReunionesPage implements OnInit {
 
-  constructor() { 
-    addIcons({playCircle,radio,library,search,megaphone,settings});
-  }
+  constructor() {
+      addIcons({playCircle,radio,library,search,megaphone}); }
 
   ngOnInit() {
   }

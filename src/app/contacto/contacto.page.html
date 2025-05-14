@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Contacto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="contact-container" *ngFor="let contacto of contactos">
+    <ion-item lines="none">
+      <ion-avatar slot="start">
+        <img [src]="contacto.foto" alt="Foto de {{ contacto.nombre }}">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ contacto.nombre }}</h2>
+
+        <p>{{ contacto.funcion }}</p>
+        <p (click)="copiarTelefono(contacto.telefono)" 
+            style="cursor: pointer; color: rgb(104, 104, 109);">
+          {{ contacto.telefono }}
+        </p>
+
+      </ion-label>
+      <ion-button fill="outline" color="success" slot="end" (click)="abrirWhatsApp(contacto.telefono)">
+        <ion-icon name="logo-whatsapp"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </div>
+</ion-content>
+<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab-button (click)="redirectToAddContact()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+

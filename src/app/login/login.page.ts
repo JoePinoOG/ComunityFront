@@ -21,4 +21,7 @@ export class LoginPage implements OnInit {
   redirectToHome() {
     this.router.navigate(['/home']);
   }
+   redirectToRegister() {
+    this.router.navigate(['/registro']);
+  }
 }
