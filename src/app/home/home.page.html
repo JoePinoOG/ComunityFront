@@ -1,18 +1,73 @@
-<ion-tabs>
-    <ion-tab tab="home">
-      <div id="home-page">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>Home</ion-title>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content>
-          <div class="example-content">aqui va el contenido del home</div>
-        </ion-content>
-      </div>
-    </ion-tab>
-    
+<!-- home.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <img src="assets/logo-junta-vecinos.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openNotifications()">
+        <ion-icon name="notifications" slot="icon-only"></ion-icon>
+        <ion-badge color="danger" *ngIf="unreadNotifications > 0">{{unreadNotifications}}</ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Sección de Bienvenida -->
+  <div class="welcome-section">
+    <h1>Hola, {{userName}}</h1>
+    <p *ngIf="nextEvent">Próximo evento: {{nextEvent.title}} - {{nextEvent.date | date:'short'}}</p>
+  </div>
+
+  <!-- Cards de Acceso Rápido -->
+  <ion-grid class="quick-actions">
+    <ion-row>
+      <ion-col size="6" *ngFor="let action of quickActions">
+        <ion-card (click)="navigateTo(action.path)" [class.disabled]="!action.available">
+          <ion-icon [name]="action.icon" [color]="action.color"></ion-icon>
+          <ion-card-header>
+            <ion-card-title>{{action.title}}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Sección de Anuncios Recientes -->
+  <ion-list-header>
+    <ion-label>Anuncios Recientes</ion-label>
+    <ion-button fill="clear" (click)="viewAllAnnouncements()">Ver todos</ion-button>
+  </ion-list-header>
   
-    
-  </ion-tabs>
+  <ion-card *ngFor="let announcement of recentAnnouncements" (click)="viewAnnouncement(announcement.id)">
+    <ion-card-header>
+      <ion-card-subtitle>{{announcement.date | date:'mediumDate'}}</ion-card-subtitle>
+      <ion-card-title>{{announcement.title}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{announcement.content | truncate:100}}
+    </ion-card-content>
+    <ion-badge *ngIf="announcement.isOfficial" color="primary">Oficial</ion-badge>
+  </ion-card>
+
+  <!-- Próximos Eventos -->
+  <ion-list-header>
+    <ion-label>Próximos Eventos</ion-label>
+    <ion-button fill="clear" (click)="viewCalendar()">Ver calendario</ion-button>
+  </ion-list-header>
+  
+  <ion-item *ngFor="let event of upcomingEvents" (click)="viewEvent(event.id)">
+    <ion-icon slot="start" name="calendar"></ion-icon>
+    <ion-label>
+      <h3>{{event.title}}</h3>
+      <p>{{event.date | date:'medium'}} - {{event.location}}</p>
+    </ion-label>
+    <ion-button fill="outline" slot="end" (click)="setReminder($event, event.id)">
+      <ion-icon name="alarm"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-content>
