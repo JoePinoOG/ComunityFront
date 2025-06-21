@@ -16,9 +16,7 @@
       <ion-input type="password" required [(ngModel)]="password" name="password"></ion-input>
     </ion-item>
 
-    <ion-button expand="block" type="submit" class="ion-margin-top">
-      Iniciar Sesión
-    </ion-button>
+    <ion-button expand="block" type="submit" class="ion-margin-top" (click)="redirectToHome()">Iniciar Sesión</ion-button>
   </form>
 
   <div class="ion-text-center ion-margin-top">

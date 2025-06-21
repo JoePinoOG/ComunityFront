@@ -81,46 +81,26 @@ export class HomePage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private announcementService: AnnouncementService,
-    private eventService: EventService,
     private alertController: AlertController
   ) {}
 
   async ngOnInit() {
-    this.loadUserData();
-    this.loadNextEvent();
-    this.loadAnnouncements();
-    this.loadUpcomingEvents();
+  }
+//nose para k sirve
+
+  doRefresh(event: any) {
+    // Aquí puedes recargar datos, por ejemplo:
+    setTimeout(() => {
+      // Lógica para refrescar datos
+      event.target.complete();
+    }, 1000);
   }
 
-  async loadUserData() {
-    const user = await this.authService.getCurrentUser();
-    if (user) {
-      this.userName = user.name;
-      this.userRole = user.role;
-      
-      // Actualizar disponibilidad de acciones rápidas según rol
-      this.quickActions.forEach(action => {
-        if (action.path === '/book-venue' || action.path === '/minutes') {
-          action.available = this.userRole !== 'vecino';
-        } else if (action.path === '/finances') {
-          action.available = this.userRole === 'tesorero';
-        }
-      });
-    }
-  }
 
-  async loadNextEvent() {
-    this.nextEvent = await this.eventService.getNextEvent();
-  }
+  
+//aqui termina lo k no se para que sirve
 
-  async loadAnnouncements() {
-    this.recentAnnouncements = await this.announcementService.getRecent(3);
-  }
 
-  async loadUpcomingEvents() {
-    this.upcomingEvents = await this.eventService.getUpcoming(3);
-  }
 
   navigateTo(path: string) {
     if (this.quickActions.find(a => a.path === path)?.available) {

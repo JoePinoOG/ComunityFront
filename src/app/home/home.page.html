@@ -62,7 +62,7 @@
       <ion-card-title>{{announcement.title}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      {{announcement.content | truncate:100}}
+      {{announcement.content}}
     </ion-card-content>
     <ion-badge *ngIf="announcement.isOfficial" color="primary">Oficial</ion-badge>
   </ion-card>

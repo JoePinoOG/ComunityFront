@@ -12,22 +12,104 @@
       </ion-avatar>
       <ion-label>
         <h2>{{ contacto.nombre }}</h2>
-
         <p>{{ contacto.funcion }}</p>
         <p (click)="copiarTelefono(contacto.telefono)" 
             style="cursor: pointer; color: rgb(104, 104, 109);">
           {{ contacto.telefono }}
         </p>
-
       </ion-label>
       <ion-button fill="outline" color="success" slot="end" (click)="abrirWhatsApp(contacto.telefono)">
         <ion-icon name="logo-whatsapp"></ion-icon>
+      </ion-button>
+
+      <!--editar -->
+      <ion-button fill="clear" color="primary" slot="end" (click)="abrirEditarContacto(contacto)">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+
+      <!--eliminar -->
+      <ion-button fill="clear" color="danger" slot="end" (click)="eliminarContacto(contacto)">
+        <ion-icon name="trash-outline"></ion-icon>
       </ion-button>
     </ion-item>
   </div>
 </ion-content>
 <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-  <ion-fab-button (click)="redirectToAddContact()">
+  <ion-fab-button (click)="abrirAgregarContacto()">
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
-
+</ion-fab>
+      <!--Modal editar-->
+<ion-modal [isOpen]="mostrarEditarContacto" (didDismiss)="cerrarEditarContacto()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Editar contacto</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarEditarContacto()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form *ngIf="contactoEditando" (ngSubmit)="guardarEdicionContacto()">
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">Foto</ion-label>
+            <input type="file" accept="image/*" (change)="onFotoEditSeleccionada($event)" />
+            <img *ngIf="fotoEditPreview" [src]="fotoEditPreview" style="width:60px;height:60px;margin-top:8px;border-radius:50%;" />
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Nombre</ion-label>
+            <ion-input [(ngModel)]="contactoEditando.nombre" name="editNombre" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Función</ion-label>
+            <ion-input [(ngModel)]="contactoEditando.funcion" name="editFuncion" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Teléfono</ion-label>
+            <ion-input [(ngModel)]="contactoEditando.telefono" name="editTelefono" type="tel" required></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button expand="block" type="submit">Guardar</ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+      <!--modal crear contacto -->
+<ion-modal [isOpen]="mostrarAgregarContacto" (didDismiss)="cerrarAgregarContacto()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Agregar contacto</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarAgregarContacto()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form (ngSubmit)="guardarNuevoContacto()">
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">Foto</ion-label>
+            <input type="file" accept="image/*" (change)="onFotoSeleccionada($event)" />
+            <img *ngIf="nuevaFotoPreview" [src]="nuevaFotoPreview" style="width:60px;height:60px;margin-top:8px;border-radius:50%;" />
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Nombre</ion-label>
+            <ion-input [(ngModel)]="nuevoContacto.nombre" name="nuevoNombre" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Función</ion-label>
+            <ion-input [(ngModel)]="nuevoContacto.funcion" name="nuevoFuncion" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Teléfono</ion-label>
+            <ion-input [(ngModel)]="nuevoContacto.telefono" name="nuevoTelefono" type="tel" required></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button expand="block" type="submit">Agregar</ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

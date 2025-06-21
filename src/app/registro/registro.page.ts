@@ -12,6 +12,7 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
+import { AuthService } from 'src/services/authservice.service';
 
 @Component({
   selector: 'app-registro',
@@ -32,12 +33,42 @@ import {
   ]
 })
 export class RegistroPage implements OnInit {
+  username = '';
+  password = '';
+  email = '';
+  first_name = '';
+  last_name = '';
+  rol = '';
+  direccion = '';
+  telefono = '';
+  rut = '';  
 
-  constructor(private router: Router) { }
+  constructor(private authService: AuthService) {}
+
+register() {
+  this.authService.register({
+    username: this.username,
+    email: this.email,
+    password: this.password,
+    first_name: this.first_name,
+    last_name: this.last_name,
+    rol: this.rol,
+    direccion: this.direccion,
+    telefono: this.telefono,
+    rut: this.rut
+  }).subscribe({
+    next: res => {
+      console.log('REGISTRO EXITOSO');
+      // Registro exitoso
+    },
+    error: err => {
+      console.log('Error al registrarse:', err);
+      alert('Error al registrarse: ' + JSON.stringify(err.error));
+    }
+  });
+}
 
   ngOnInit() { }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
-  }
+
 }
