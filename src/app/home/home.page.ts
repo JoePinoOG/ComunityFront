@@ -26,9 +26,9 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
-import { AnnouncementService } from '../services/announcement.service';
-import { EventService } from '../services/event.service';
+import { AuthService } from '../../services/authservice.service';
+//import { AnnouncementService } from '../services/announcement.service';
+//import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-home',
