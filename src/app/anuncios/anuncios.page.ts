@@ -2,22 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonButton,
   IonCard,
-  IonCardContent,  
+  IonCardContent,
   IonContent,
   IonHeader,
   IonIcon,
-  IonTab,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
   IonTitle,
-  IonToolbar, } from '@ionic/angular/standalone';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { PublicacionesService } from 'src/servicios/publicaciones.service';
+  IonToolbar
+} from '@ionic/angular/standalone';
+import { PublicacionesService } from 'src/services/publicaciones.service';
 import { addIcons } from 'ionicons';
-import {trashOutline, trashBin } from 'ionicons/icons';
+import { trashOutline, trashBin } from 'ionicons/icons';
 
 @Component({
   selector: 'app-anuncios',
@@ -25,29 +20,31 @@ import {trashOutline, trashBin } from 'ionicons/icons';
   styleUrls: ['./anuncios.page.scss'],
   standalone: true,
   imports: [
-  IonButton,
     CommonModule,
+    FormsModule,
     IonCard,
     IonCardContent,
-    RouterLink,IonContent, IonHeader,
-    IonIcon, IonTab, IonTabBar, IonTabButton,
-     IonTabs, IonTitle, IonToolbar]
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonTitle,
+    IonToolbar
+  ]
 })
 export class AnunciosPage implements OnInit {
 
   publicaciones: { texto: string; imagen: string | null }[] = [];
 
   constructor(private publicacionesService: PublicacionesService) {
-    
-    addIcons({trashBin,trashOutline});   
-  
+    addIcons({ trashBin, trashOutline });
   }
 
   ngOnInit() {
     this.publicaciones = this.publicacionesService.obtenerPublicaciones();
   }
+
   borrarPublicacion(index: number) {
     this.publicacionesService.eliminarPublicacion(index);
-    this.publicaciones = this.publicacionesService.obtenerPublicaciones(); // Actualiza la lista
+    this.publicaciones = this.publicacionesService.obtenerPublicaciones();
   }
 }

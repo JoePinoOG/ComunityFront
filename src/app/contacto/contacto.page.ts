@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  IonAvatar,
+import {
+  IonAvatar,
   IonButton,
   IonButtons,
   IonBackButton,
@@ -10,30 +11,39 @@ import {  IonAvatar,
   IonContent,
   IonHeader,
   IonIcon,
-  IonTab,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
   IonTitle,
-  IonToolbar,IonFab,IonFabButton } from '@ionic/angular/standalone';
-import { RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
+  IonToolbar,
+  IonFab,
+  IonFabButton
+} from '@ionic/angular/standalone';
+import { RouterLink, Router } from '@angular/router';
 import { addIcons } from 'ionicons';
-import {logoWhatsapp, add } from 'ionicons/icons';
+import { logoWhatsapp, add } from 'ionicons/icons';
 
 @Component({
   selector: 'app-contacto',
   templateUrl: './contacto.page.html',
   styleUrls: ['./contacto.page.scss'],
   standalone: true,
-  imports: [IonFabButton,IonFab,CommonModule,IonBackButton,  IonButton,
-    IonButtons,IonLabel,RouterLink,IonContent, IonHeader,
-    IonIcon, IonTab, IonTabBar, IonTabButton,
-     IonTabs, IonTitle, IonToolbar,IonItem,IonAvatar]
+  imports: [
+    IonAvatar,
+    IonButton,
+    IonLabel,
+    IonItem,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonTitle,
+    IonToolbar,
+    IonFab,
+    IonFabButton,
+    CommonModule,
+    FormsModule,
+    RouterLink
+  ]
 })
 export class ContactoPage implements OnInit {
   contactos = [
-
     {
       nombre: 'María López',
       funcion: 'Secretaria',
@@ -58,12 +68,13 @@ export class ContactoPage implements OnInit {
     });
   }
   constructor(private router: Router) {
-      addIcons({logoWhatsapp,add}); }
+    addIcons({ logoWhatsapp, add });
+  }
 
   ngOnInit() {
     console.log('Contactos:', this.contactos);
   }
-redirectToAddContact() {
-  this.router.navigate(['/add-contact']);
+  redirectToAddContact() {
+    this.router.navigate(['/add-contact']);
   }
 }

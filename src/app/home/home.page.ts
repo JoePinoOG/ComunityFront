@@ -1,6 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController } from '@ionic/angular';
+import {
+  AlertController,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonLabel,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonListHeader,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonItem,
+  IonIcon,
+  IonBadge,
+  IonRefresher,
+  IonRefresherContent,
+  IonCardSubtitle
+} from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { AnnouncementService } from '../services/announcement.service';
 import { EventService } from '../services/event.service';
@@ -9,6 +34,32 @@ import { EventService } from '../services/event.service';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  standalone: true,
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonLabel,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonListHeader,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    IonIcon,
+    IonBadge,
+    IonRefresher,
+    IonRefresherContent,
+    IonCardSubtitle,
+    CommonModule,
+    FormsModule
+  ]
 })
 export class HomePage implements OnInit {
   userName: string = 'Usuario';
