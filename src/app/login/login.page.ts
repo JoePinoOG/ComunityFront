@@ -1,58 +1,41 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonLabel,
-  IonInput,
-  IonButton,
-  IonItem,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar
-} from '@ionic/angular/standalone';
-import { RouterLink, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { IonLabel, IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonButton, IonInput } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/services/authservice.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [
-    IonLabel,
-    IonInput,
-    IonButton,
-    IonItem,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    CommonModule,
-    FormsModule,
-    RouterLink
-  ]
+  imports: [IonLabel, IonInput, IonButton, IonItem, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
-  email: string = '';
-  password: string = '';
-
-  constructor(private http: HttpClient, private router: Router) { }
-
-  ngOnInit() {}
-
+  username = '';
+  password = '';
+  
+  constructor(private authService: AuthService, private router: Router) {}
   login() {
-    this.http.post<any>('/api/usuarios/login/', {
-      email: this.email,
-      password: this.password
-    }).subscribe(res => {
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('userRole', res.role);
-      this.router.navigate(['/home']);
-    }, err => {
-      alert('Credenciales incorrectas');
+    this.authService.login(this.username, this.password).subscribe({
+      next: (res: any) => {
+        console.log('Token recibido:', res.access); // Muestra el token en la consola
+        if (res && res.access) {
+          localStorage.setItem('token', res.access);
+        }
+        // Redirige al home
+        this.router.navigate(['/home']);
+      },
+      error: (_err: any) => {
+        alert('Credenciales incorrectas o error de conexión');
+      }
     });
   }
+  
+  ngOnInit() {}
+
 
   redirectToRegister() {
     this.router.navigate(['/registro']);

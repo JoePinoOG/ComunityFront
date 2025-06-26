@@ -26,7 +26,9 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/authservice.service';
+import { AuthService,Usuario } from '../../services/authservice.service';
+import { addIcons } from 'ionicons';
+import { logOutOutline, notifications, calendar, alarm } from 'ionicons/icons';
 //import { AnnouncementService } from '../services/announcement.service';
 //import { EventService } from '../services/event.service';
 
@@ -62,6 +64,7 @@ import { AuthService } from '../../services/authservice.service';
   ]
 })
 export class HomePage implements OnInit {
+  userInfo: Usuario | null = null
   userName: string = 'Usuario';
   userRole: string = 'vecino'; // Puede ser 'vecino', 'secretario', 'tesorero', 'presidente'
   unreadNotifications: number = 2;
@@ -82,23 +85,29 @@ export class HomePage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private alertController: AlertController
-  ) {}
+  ) {
+        addIcons({notifications,calendar,alarm,logOutOutline});
+
+  }
 
   async ngOnInit() {
+    this.authService.getProfile().subscribe({
+    next: (user) => {
+      this.userInfo = user;
+    },
+    error: (err) => {
+      console.log('Error al obtener perfil:', err);
+    }
+  });
   }
-//nose para k sirve
 
   doRefresh(event: any) {
-    // Aquí puedes recargar datos, por ejemplo:
     setTimeout(() => {
       // Lógica para refrescar datos
       event.target.complete();
     }, 1000);
   }
 
-
-  
-//aqui termina lo k no se para que sirve
 
 
 
@@ -160,4 +169,10 @@ export class HomePage implements OnInit {
   openNotifications() {
     this.router.navigateByUrl('/notifications');
   }
+
+    logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
 }

@@ -19,7 +19,7 @@
   </ion-refresher>
   <!-- Sección de Bienvenida -->
   <div class="welcome-section">
-    <h1>Hola, {{userName}}</h1>
+    <h1>Hola, {{userInfo?.first_name }} {{ userInfo?.last_name }}</h1>
     <p *ngIf="nextEvent">Próximo evento: {{nextEvent.title}} - {{nextEvent.date | date:'short'}}</p>
   </div>
 

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonAvatar,
+import {  IonAvatar,IonModal,
   IonButton,
   IonButtons,
   IonBackButton,
@@ -11,40 +10,33 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonTab,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
   IonTitle,
-  IonToolbar,
-  IonFab,
-  IonFabButton,
-  IonList
-} from '@ionic/angular/standalone';
-import { RouterLink, Router } from '@angular/router';
+  IonToolbar,IonFab,IonFabButton,
+  IonList } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { logoWhatsapp, add } from 'ionicons/icons';
+import {logoWhatsapp, add, createOutline, trashOutline } from 'ionicons/icons';
+import { AuthService,Usuario } from 'src/services/authservice.service';
+
 
 @Component({
   selector: 'app-contacto',
   templateUrl: './contacto.page.html',
   styleUrls: ['./contacto.page.scss'],
   standalone: true,
-  imports: [
-    IonAvatar,
-    IonButton,
-    IonLabel,
-    IonItem,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonTitle,
-    IonToolbar,
-    IonFab,
-    IonFabButton,
-    CommonModule,
-    FormsModule,
-    RouterLink
-  ]
+  imports: [IonModal,IonFabButton,IonFab,CommonModule,IonBackButton,  IonButton,
+    IonButtons,IonLabel,RouterLink,IonContent, IonHeader,
+    IonIcon, IonTab, IonTabBar, IonTabButton,
+     IonTabs, IonTitle, IonToolbar,IonItem,IonAvatar,FormsModule,IonList]
 })
 export class ContactoPage implements OnInit {
   contactos = [
+
     {
       nombre: 'María López',
       funcion: 'Secretaria',
@@ -67,6 +59,8 @@ export class ContactoPage implements OnInit {
   nuevoContacto = { nombre: '', funcion: '', telefono: '', foto: '' };
   nuevaFotoPreview: string | ArrayBuffer | null = null;
 
+  userInfo: Usuario | null = null;
+
   abrirLlamada(telefono: string) {
     const url = `tel:${telefono}`;
     window.open(url, '_blank');
@@ -81,15 +75,32 @@ export class ContactoPage implements OnInit {
       alert('Número copiado al portapapeles');
     });
   }
-  constructor(private router: Router) {
-    addIcons({ logoWhatsapp, add });
-  }
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {
+      addIcons({logoWhatsapp,createOutline,trashOutline,add}); }
 
   ngOnInit() {
-    console.log('Contactos:', this.contactos);
+    this.authService.getProfile().subscribe({
+      next: (user) => {
+        this.userInfo = user;
+        console.log('Usuario logeado:', this.userInfo);
+      },
+      error: (err) => {
+        console.log('Error al obtener perfil:', err);
+      }
+    });
   }
+
+  esRolPermitido(): boolean {
+    if (!this.userInfo) return false;
+    const rol = this.userInfo.rol?.toUpperCase();
+    return rol === 'TESORERO' || rol === 'PRESIDENTE' || rol === 'SECRETARIO';
+  }
+
   redirectToAddContact() {
-    this.router.navigate(['/add-contact']);
+  this.router.navigate(['/add-contact']);
   }
   abrirEditarContacto(contacto: any) {
     this.contactoEditando = { ...contacto };

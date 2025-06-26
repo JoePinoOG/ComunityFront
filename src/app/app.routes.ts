@@ -31,10 +31,6 @@ export const routes: Routes = [
     loadComponent: () => import('./anuncios/anuncios.page').then( m => m.AnunciosPage)
   },
   {
-    path: 'add-contact',
-    loadComponent: () => import('./add-contact/add-contact.page').then( m => m.AddContactPage)
-  },
-  {
     path: 'certificado-residencia',
     loadComponent: () => import('./certificado-residencia/certificado-residencia.page').then( m => m.CertificadoResidenciaPage)
   }

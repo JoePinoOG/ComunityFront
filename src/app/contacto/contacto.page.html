@@ -22,24 +22,33 @@
         <ion-icon name="logo-whatsapp"></ion-icon>
       </ion-button>
 
-      <!--editar -->
-      <ion-button fill="clear" color="primary" slot="end" (click)="abrirEditarContacto(contacto)">
-        <ion-icon name="create-outline"></ion-icon>
+
+      <ion-button
+        fill="clear"
+        color="primary"
+        *ngIf="esRolPermitido()"
+        (click)="abrirEditarContacto(contacto)">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
 
-      <!--eliminar -->
-      <ion-button fill="clear" color="danger" slot="end" (click)="eliminarContacto(contacto)">
-        <ion-icon name="trash-outline"></ion-icon>
+      <ion-button
+        fill="clear"
+        color="danger"
+        *ngIf="esRolPermitido()"
+        (click)="eliminarContacto(contacto)">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-item>
   </div>
 </ion-content>
-<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+
+
+<ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="esRolPermitido()">
   <ion-fab-button (click)="abrirAgregarContacto()">
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
 </ion-fab>
-      <!--Modal editar-->
+
 <ion-modal [isOpen]="mostrarEditarContacto" (didDismiss)="cerrarEditarContacto()">
   <ng-template>
     <ion-header>
@@ -76,7 +85,8 @@
     </ion-content>
   </ng-template>
 </ion-modal>
-      <!--modal crear contacto -->
+      
+
 <ion-modal [isOpen]="mostrarAgregarContacto" (didDismiss)="cerrarAgregarContacto()">
   <ng-template>
     <ion-header>

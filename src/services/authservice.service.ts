@@ -8,11 +8,15 @@ export interface Usuario {
   direccion: string;
   telefono: string;
   rut: string;
+  junta_vecinos: string;
+  
 }
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +44,16 @@ export class AuthService {
   register(data: Usuario): Observable<any> {
   return this.http.post(`${this.apiUrl}/auth/usuarios/`, data);
 }
+getProfile(): Observable<Usuario> {
+  return this.http.get<Usuario>(`${this.apiUrl}/auth/me/`); //
+}
+ getUserInfo(): Usuario | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return jwtDecode<Usuario>(token);
+    }
+    return null;
+  }
+
 
 }
