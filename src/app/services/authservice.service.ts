@@ -55,5 +55,13 @@ getProfile(): Observable<Usuario> {
     return null;
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  async getTokenAsync(): Promise<string | null> {
+    return localStorage.getItem('token');
+  }
+
 
 }

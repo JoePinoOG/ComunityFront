@@ -5,40 +5,54 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="contact-container" *ngFor="let contacto of contactos">
-    <ion-item lines="none">
-      <ion-avatar slot="start">
-        <img [src]="contacto.foto" alt="Foto de {{ contacto.nombre }}">
-      </ion-avatar>
-      <ion-label>
-        <h2>{{ contacto.nombre }}</h2>
-        <p>{{ contacto.funcion }}</p>
-        <p (click)="copiarTelefono(contacto.telefono)" 
-            style="cursor: pointer; color: rgb(104, 104, 109);">
-          {{ contacto.telefono }}
-        </p>
-      </ion-label>
-      <ion-button fill="outline" color="success" slot="end" (click)="abrirWhatsApp(contacto.telefono)">
-        <ion-icon name="logo-whatsapp"></ion-icon>
-      </ion-button>
+  <!-- Indicador de carga -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="circular"></ion-spinner>
+    <p>Cargando contactos...</p>
+  </div>
+
+  <!-- Lista de contactos -->
+  <div *ngIf="!isLoading">
+    <div class="contact-container" *ngFor="let contacto of (contactos || [])">
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img [src]="contacto.foto" alt="Foto de {{ contacto.nombre }}">
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ contacto.nombre }}</h2>
+          <p>{{ contacto.funcion }}</p>
+          <p (click)="copiarTelefono(contacto.telefono)" 
+              style="cursor: pointer; color: rgb(104, 104, 109);">
+            {{ contacto.telefono }}
+          </p>
+        </ion-label>
+        <ion-button fill="outline" color="success" slot="end" (click)="abrirWhatsApp(contacto.telefono)">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+        </ion-button>
 
 
-      <ion-button
-        fill="clear"
-        color="primary"
-        *ngIf="esRolPermitido()"
-        (click)="abrirEditarContacto(contacto)">
-        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-      </ion-button>
+        <ion-button
+          fill="clear"
+          color="primary"
+          *ngIf="esRolPermitido()"
+          (click)="abrirEditarContacto(contacto)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
 
-      <ion-button
-        fill="clear"
-        color="danger"
-        *ngIf="esRolPermitido()"
-        (click)="eliminarContacto(contacto)">
-        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
+        <ion-button
+          fill="clear"
+          color="danger"
+          *ngIf="esRolPermitido()"
+          (click)="eliminarContacto(contacto)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+
+    <!-- Mensaje cuando no hay contactos -->
+    <div *ngIf="!contactos || contactos.length === 0" class="no-contacts">
+      <p>No hay contactos disponibles.</p>
+    </div>
   </div>
 </ion-content>
 

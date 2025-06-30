@@ -12,3 +12,35 @@
     --padding-start: 0;
     --inner-padding-end: 0;
   }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    
+    ion-spinner {
+      margin-bottom: 16px;
+    }
+    
+    p {
+      color: var(--ion-color-medium);
+      margin: 0;
+    }
+  }
+  
+  .no-contacts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    
+    p {
+      color: var(--ion-color-medium);
+      margin: 0;
+      font-style: italic;
+    }
+  }
