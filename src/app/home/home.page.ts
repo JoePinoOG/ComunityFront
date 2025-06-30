@@ -26,7 +26,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService,Usuario } from '../../services/authservice.service';
+import { AuthService,Usuario } from '../services/authservice.service';
 import { addIcons } from 'ionicons';
 import { logOutOutline, notifications, calendar, alarm } from 'ionicons/icons';
 //import { AnnouncementService } from '../services/announcement.service';
