@@ -36,3 +36,95 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+// Estilos globales para el calendario de reuniones
+.calendar-highlighted-date {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(238, 90, 36, 0.3);
+    animation: pulse 2s infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+// Estilos para fechas con múltiples reuniones
+.calendar-multiple-meetings {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: calc(50% - 6px);
+    width: 4px;
+    height: 4px;
+    background: #f39c12;
+    border-radius: 50%;
+    z-index: 1;
+  }
+}
+
+// Personalización del datetime de Ionic
+ion-datetime {
+  --ion-color-primary: #3498db;
+  --ion-color-primary-rgb: 52, 152, 219;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #2980b9;
+  --ion-color-primary-tint: #5dade2;
+}
+
+// Mejorar la apariencia de los modales
+ion-modal {
+  --border-radius: 12px;
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+// Estilos para los badges de tipo de reunión
+.reunion-badge-ordinaria {
+  --background: #3498db;
+  --color: white;
+}
+
+.reunion-badge-extraordinaria {
+  --background: #e74c3c;
+  --color: white;
+}
+
+.reunion-badge-informativa {
+  --background: #f39c12;
+  --color: white;
+}
+

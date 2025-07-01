@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar
+} from '@ionic/angular/standalone';
 import { ArriendosService } from '../services/arriendos.service';
 
 @Component({
@@ -9,7 +14,14 @@ import { ArriendosService } from '../services/arriendos.service';
   templateUrl: './arriendos.page.html',
   styleUrls: ['./arriendos.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar
+  ]
 })
 export class ArriendosPage implements OnInit {
   solicitudes: any[] = [];
@@ -17,9 +29,13 @@ export class ArriendosPage implements OnInit {
   constructor(private arriendosService: ArriendosService) {}
 
   ngOnInit() {
-    const token = 'TU_TOKEN_JWT'; // Reemplaza por el token real del usuario autenticado
-    this.arriendosService.getSolicitudes(token).subscribe(data => {
-      this.solicitudes = data;
+    this.arriendosService.getSolicitudes().subscribe({
+      next: (data) => {
+        this.solicitudes = data;
+      },
+      error: (error) => {
+        console.error('Error al cargar solicitudes:', error);
+      }
     });
   }
 }

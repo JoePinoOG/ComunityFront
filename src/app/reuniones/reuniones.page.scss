@@ -1,11 +1,389 @@
-.datetime-container {
-  display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: top; /* Centra verticalmente */
-  height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura */
+// Animación de eliminación
+.deleting {
+  animation: fadeOutSlide 0.3s ease-out forwards;
+  pointer-events: none; // Evitar interacciones durante la animación
 }
 
-ion-datetime {
-  max-width: 300px; /* Opcional: ajusta el ancho máximo */
-  width: 100%; /* Asegúrate de que se ajuste al contenedor */
+@keyframes fadeOutSlide {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 200px; // Ajustar según el contenido
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50px);
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// Variante específica para items de lista
+.reunion-item.deleting {
+  animation: fadeOutSlideItem 0.3s ease-out forwards;
+}
+
+@keyframes fadeOutSlideItem {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: 100px; // Altura típica de un item
+  }
+  50% {
+    opacity: 0.3;
+    transform: translateX(30px) scale(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(60px) scale(0.9);
+    max-height: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}
+
+// Variante específica para tarjetas de detalles
+.selected-reunion-card.deleting {
+  animation: fadeOutCard 0.3s ease-out forwards;
+}
+
+@keyframes fadeOutCard {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+// Estilos principales del componente
+#Reuniones-page {
+  .custom-datetime {
+    --background: transparent;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    
+    ion-datetime {
+      --ion-color-primary: #3880ff;
+      --ion-color-primary-rgb: 56, 128, 255;
+      --ion-color-primary-contrast: #ffffff;
+      --ion-color-primary-contrast-rgb: 255, 255, 255;
+      --ion-color-primary-shade: #3171e0;
+      --ion-color-primary-tint: #4c8dff;
+    }
+  }
+}
+
+// Títulos de cards centrados
+.card-title-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  ion-icon {
+    font-size: 1.3em;
+  }
+}
+
+// Contenido del calendario centrado
+.calendar-content {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+// Card de reunión seleccionada
+.selected-reunion-card {
+  border-left: 4px solid var(--ion-color-primary);
+  
+  .reunion-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .reunion-badge {
+      align-self: flex-start;
+      font-size: 0.75em;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+    
+    .reunion-title {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+// Detalles de la reunión
+.reunion-details {
+  margin: 16px 0;
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    
+    ion-icon {
+      margin-right: 12px;
+      font-size: 1.2em;
+      min-width: 24px;
+    }
+    
+    span {
+      font-size: 0.95em;
+      color: var(--ion-color-dark);
+      line-height: 1.4;
+    }
+  }
+}
+
+// Acciones de reunión
+.reunion-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  
+  ion-button {
+    flex: 1;
+    height: 40px;
+  }
+}
+
+// Card cuando no hay reunión
+.no-reunion-card {
+  text-align: center;
+  border: 2px dashed var(--ion-color-light-shade);
+  
+  .no-reunion-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    
+    ion-icon {
+      opacity: 0.6;
+    }
+    
+    h3 {
+      margin: 8px 0 4px 0;
+      color: var(--ion-color-dark);
+      font-size: 1.1em;
+    }
+    
+    p {
+      margin: 0 0 16px 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9em;
+    }
+  }
+}
+
+// Lista de reuniones
+.reuniones-list-card {
+  margin-top: 16px;
+}
+
+.reuniones-list {
+  .reunion-item {
+    margin-bottom: 8px;
+    border-radius: 8px;
+    --background: var(--ion-color-light);
+    --border-radius: 8px;
+    
+    .reunion-item-title {
+      font-size: 1em;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--ion-color-dark);
+    }
+    
+    .reunion-item-date, .reunion-item-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85em;
+      color: var(--ion-color-medium);
+      margin: 2px 0;
+      
+      ion-icon {
+        font-size: 0.9em;
+      }
+    }
+    
+    .reunion-item-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      
+      .reunion-item-badge {
+        font-size: 0.7em;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-weight: 500;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 4px;
+        
+        ion-button {
+          --padding-start: 6px;
+          --padding-end: 6px;
+          
+          ion-icon {
+            font-size: 1.1em;
+          }
+          
+          &:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+          }
+        }
+      }
+    }
+    
+    ion-label[button] {
+      cursor: pointer;
+      flex: 1;
+      
+      &:hover {
+        --background: var(--ion-color-light-tint);
+      }
+    }
+  }
+}
+
+// Lista de reuniones vacía
+.no-reuniones {
+  text-align: center;
+  padding: 40px 16px;
+  
+  ion-icon {
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    margin: 8px 0 4px 0;
+    color: var(--ion-color-dark);
+    font-size: 1.1em;
+  }
+  
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 0.9em;
+    line-height: 1.4;
+  }
+}
+
+// Modal de creación/edición
+.modal-content {
+  padding: 16px;
+  
+  ion-item {
+    margin-bottom: 16px;
+    --background: transparent;
+    --border-width: 0 0 1px 0;
+    --border-color: var(--ion-color-light-shade);
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+}
+
+.modal-buttons {
+  padding: 24px 0 16px 0;
+  
+  ion-button {
+    height: 48px;
+    font-weight: 600;
+  }
+}
+
+// Responsivo
+@media (max-width: 768px) {
+  .reunion-actions {
+    flex-direction: column;
+    gap: 8px;
+    
+    ion-button {
+      width: 100%;
+    }
+  }
+  
+  .calendar-content {
+    padding: 8px;
+  }
+  
+  .modal-content {
+    padding: 12px;
+  }
+  
+  .selected-reunion-card .reunion-header .reunion-title {
+    font-size: 1.1em;
+  }
+}
+
+// Animaciones
+.selected-reunion-card,
+.no-reunion-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.reunion-details {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Mejoras en el header
+ion-toolbar ion-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+// FAB button
+ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
 }
