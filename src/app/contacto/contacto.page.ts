@@ -21,8 +21,9 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import {logoWhatsapp, add, createOutline, trashOutline } from 'ionicons/icons';
-import { AuthService,Usuario } from '../services/authservice.service';
-import { ContactosService, Contacto } from '../services/contactos.service';
+import { AuthService } from '../services/authservice.service';
+import { ContactosService } from '../services/contactos.service';
+import { Usuario, Contacto, ROLES_PERMITIDOS } from '../models';
 
 
 @Component({
@@ -151,7 +152,7 @@ export class ContactoPage implements OnInit {
   esRolPermitido(): boolean {
     if (!this.userInfo) return false;
     const rol = this.userInfo.rol?.toUpperCase();
-    return rol === 'TESORERO' || rol === 'PRESIDENTE' || rol === 'SECRETARIO';
+    return ROLES_PERMITIDOS.includes(rol);
   }
 
   redirectToAddContact() {

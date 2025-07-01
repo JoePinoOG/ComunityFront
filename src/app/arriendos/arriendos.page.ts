@@ -8,6 +8,7 @@ import {
   IonToolbar
 } from '@ionic/angular/standalone';
 import { ArriendosService } from '../services/arriendos.service';
+import { Arriendo, ArriendoResponse } from '../models';
 
 @Component({
   selector: 'app-arriendos',
@@ -24,17 +25,23 @@ import { ArriendosService } from '../services/arriendos.service';
   ]
 })
 export class ArriendosPage implements OnInit {
-  solicitudes: any[] = [];
+  solicitudes: Arriendo[] = [];
 
   constructor(private arriendosService: ArriendosService) {}
 
   ngOnInit() {
     this.arriendosService.getSolicitudes().subscribe({
-      next: (data) => {
-        this.solicitudes = data;
+      next: (response) => {
+        // Manejar respuesta paginada o array directo
+        if (Array.isArray(response)) {
+          this.solicitudes = response;
+        } else {
+          this.solicitudes = response.results || [];
+        }
       },
       error: (error) => {
         console.error('Error al cargar solicitudes:', error);
+        this.solicitudes = [];
       }
     });
   }

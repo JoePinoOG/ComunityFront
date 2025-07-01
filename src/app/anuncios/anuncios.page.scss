@@ -1,0 +1,179 @@
+// Loading, error y empty states
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  padding: 2rem;
+  text-align: center;
+
+  ion-icon {
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    color: var(--ion-color-medium);
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 1rem;
+  }
+}
+
+// Container principal
+.publicaciones-container {
+  padding: 1rem;
+}
+
+// Card de publicación
+.publicacion-card {
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+
+  // Header del card
+  ion-card-header {
+    padding-bottom: 8px;
+
+    .card-header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+
+      .fecha {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--ion-color-medium);
+        font-size: 0.875rem;
+
+        ion-icon {
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    ion-card-title {
+      font-size: 1.125rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+  }
+
+  // Content del card
+  ion-card-content {
+    .contenido {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      color: var(--ion-color-step-600);
+    }
+
+    // Información específica de eventos
+    .evento-info {
+      background: var(--ion-color-light);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+
+      .evento-detalle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        ion-icon {
+          flex-shrink: 0;
+        }
+
+        span {
+          color: var(--ion-color-dark);
+          font-weight: 500;
+        }
+      }
+    }
+
+    // Container de imagen
+    .imagen-container {
+      margin: 1rem 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      ion-img {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+      }
+    }
+
+    // Información del autor
+    .autor-info {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--ion-color-light);
+      color: var(--ion-color-medium);
+      font-size: 0.875rem;
+
+      ion-icon {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+// Badges de tipo
+ion-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .publicaciones-container {
+    padding: 0.5rem;
+  }
+
+  .publicacion-card {
+    margin-bottom: 0.75rem;
+
+    ion-card-header .card-header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+
+      .fecha {
+        align-self: flex-end;
+      }
+    }
+  }
+}
+
+// Animaciones suaves
+.publicacion-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Estilo del refresher
+ion-refresher {
+  z-index: 100;
+}

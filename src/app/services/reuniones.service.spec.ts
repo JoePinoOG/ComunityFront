@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ReunionesService, Reunion } from './reuniones.service';
+import { ReunionesService } from './reuniones.service';
+import { environment } from '../../environments/environment';
+import { Reunion } from '../models';
 import { AuthService } from './authservice.service';
 
 describe('ReunionesService', () => {
@@ -49,7 +51,7 @@ describe('ReunionesService', () => {
       expect(reuniones).toEqual(mockReuniones);
     });
 
-    const req = httpMock.expectOne('https://backendcomunity.onrender.com/api/reuniones/');
+    const req = httpMock.expectOne(`${environment.apiUrl}/reuniones/`);
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer mock-token');
     req.flush(mockReuniones);
@@ -63,7 +65,7 @@ describe('ReunionesService', () => {
       expect(reunion).toEqual(mockReunion);
     });
 
-    const req = httpMock.expectOne('https://backendcomunity.onrender.com/api/reuniones/');
+    const req = httpMock.expectOne(`${environment.apiUrl}/reuniones/`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newReunion);
     req.flush(mockReunion);
@@ -74,7 +76,7 @@ describe('ReunionesService', () => {
       expect(reunion).toEqual(mockReunion);
     });
 
-    const req = httpMock.expectOne('https://backendcomunity.onrender.com/api/reuniones/1/');
+    const req = httpMock.expectOne(`${environment.apiUrl}/reuniones/1/`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(mockReunion);
     req.flush(mockReunion);
@@ -85,7 +87,7 @@ describe('ReunionesService', () => {
       expect(response).toBeTruthy();
     });
 
-    const req = httpMock.expectOne('https://backendcomunity.onrender.com/api/reuniones/1/');
+    const req = httpMock.expectOne(`${environment.apiUrl}/reuniones/1/`);
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });

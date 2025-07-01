@@ -5,19 +5,86 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div *ngFor="let publicacion of publicaciones; let i = index" class="publicacion">
-    <ion-card>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="refresh-outline"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="crescent"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando publicaciones...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="error-container">
+    <ion-icon name="refresh-outline" size="large" color="medium"></ion-icon>
+    <h3>{{ error }}</h3>
+    <ion-button fill="outline" (click)="cargarPublicaciones()">
+      Reintentar
+    </ion-button>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && !error && publicaciones.length === 0" class="empty-container">
+    <ion-icon name="document-text-outline" size="large" color="medium"></ion-icon>
+    <h3>No hay publicaciones</h3>
+    <p>¡Sé el primero en crear una publicación!</p>
+  </div>
+
+  <!-- Publicaciones -->
+  <div class="publicaciones-container" *ngIf="!loading && !error && publicaciones.length > 0">
+    <ion-card *ngFor="let publicacion of publicaciones" class="publicacion-card">
+      
+      <!-- Header with type and date -->
+      <ion-card-header>
+        <div class="card-header-content">
+          <ion-badge [color]="getTipoColor(publicacion.tipo)">
+            {{ getTipoLabel(publicacion.tipo) }}
+          </ion-badge>
+          <div class="fecha" *ngIf="publicacion.fecha_creacion">
+            <ion-icon name="time-outline" size="small"></ion-icon>
+            <span>{{ formatearFecha(publicacion.fecha_creacion) }}</span>
+          </div>
+        </div>
+        
+        <ion-card-title>{{ publicacion.titulo }}</ion-card-title>
+      </ion-card-header>
+
       <ion-card-content>
-        <p>{{ publicacion.texto }}</p>
-        <img *ngIf="publicacion.imagen" [src]="publicacion.imagen" alt="Imagen de la publicación" />
-        <ion-icon 
-          name="trash-outline" 
-          color="danger" 
-          size="large" 
-          style="cursor: pointer;" 
-          (click)="borrarPublicacion(i)">
-        </ion-icon>
+        <!-- Contenido principal -->
+        <p class="contenido">{{ publicacion.contenido }}</p>
+
+        <!-- Información específica de eventos -->
+        <div *ngIf="publicacion.tipo === 'EVENTO'" class="evento-info">
+          <div *ngIf="publicacion.fecha_evento" class="evento-detalle">
+            <ion-icon name="calendar-outline" color="primary"></ion-icon>
+            <span>{{ formatearFecha(publicacion.fecha_evento) }}</span>
+          </div>
+          <div *ngIf="publicacion.lugar_evento" class="evento-detalle">
+            <ion-icon name="location-outline" color="primary"></ion-icon>
+            <span>{{ publicacion.lugar_evento }}</span>
+          </div>
+        </div>
+
+        <!-- Imagen si existe -->
+        <div *ngIf="publicacion.imagen" class="imagen-container">
+          <ion-img 
+            [src]="publicacion.imagen" 
+            [alt]="'Imagen de ' + publicacion.titulo">
+          </ion-img>
+        </div>
+
+        <!-- Footer con autor si está disponible -->
+        <div *ngIf="publicacion.autor" class="autor-info">
+          <ion-icon name="person-outline" size="small" color="medium"></ion-icon>
+          <span>Autor ID: {{ publicacion.autor }}</span>
+        </div>
       </ion-card-content>
     </ion-card>
   </div>

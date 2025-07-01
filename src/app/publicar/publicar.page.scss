@@ -1,0 +1,59 @@
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// Error messages styling
+.error-message {
+  padding: 4px 16px;
+  margin-bottom: 8px;
+  
+  small {
+    color: var(--ion-color-danger);
+    font-size: 0.75rem;
+  }
+}
+
+// Action buttons
+.action-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  
+  ion-button {
+    flex: 1;
+  }
+}
+
+// Form items spacing
+ion-item {
+  margin-bottom: 8px;
+  --border-radius: 8px;
+ 
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+// File input styling
+input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px dashed var(--ion-color-medium);
+  border-radius: 4px;
+  background: var(--ion-color-backgrounds);
+}
+
+small {
+  display: block;
+  margin-top: 4px;
+  color: var(--ion-color-medium);
+  font-size: 0.875rem;
+}

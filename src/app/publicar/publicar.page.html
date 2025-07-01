@@ -1,23 +1,75 @@
-<ion-tabs>
 <ion-header>
   <ion-toolbar>
-    <ion-title>Publicar</ion-title>
+    <ion-title>Crear Publicación</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form (submit)="crearPublicacion()">
+  <form [formGroup]="publicacionForm" (ngSubmit)="crearPublicacion()">
+    
+    <!-- Título -->
     <ion-item>
-      <ion-label position="stacked">Texto de la publicación</ion-label>
-      <ion-textarea placeholder="Escribe algo..." [(ngModel)]="publicacionTexto" name="texto"></ion-textarea>
+      <ion-label position="stacked">Título *</ion-label>
+      <ion-input 
+        formControlName="titulo" 
+        placeholder="Ingresa el título de tu publicación">
+      </ion-input>
+    </ion-item>
+    <div *ngIf="titulo?.invalid && titulo?.touched" class="error-message">
+      <small *ngIf="titulo?.errors?.['required']">El título es requerido</small>
+      <small *ngIf="titulo?.errors?.['maxlength']">El título no puede exceder 200 caracteres</small>
+    </div>
+
+    <!-- Tipo de publicación -->
+    <ion-item>
+      <ion-label position="stacked">Tipo de publicación *</ion-label>
+      <ion-select formControlName="tipo" placeholder="Selecciona el tipo">
+        <ion-select-option *ngFor="let tipo of tiposPublicacion" [value]="tipo.value">
+          {{ tipo.label }}
+        </ion-select-option>
+      </ion-select>
     </ion-item>
 
+    <!-- Contenido -->
     <ion-item>
-      <ion-label position="stacked">Agregar una foto</ion-label>
-      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+      <ion-label position="stacked">Contenido *</ion-label>
+      <ion-textarea 
+        formControlName="contenido"
+        placeholder="Describe el contenido de tu publicación..."
+        rows="4">
+      </ion-textarea>
+    </ion-item>
+    <div *ngIf="contenido?.invalid && contenido?.touched" class="error-message">
+      <small *ngIf="contenido?.errors?.['required']">El contenido es requerido</small>
+    </div>
+
+    <!-- Imagen -->
+    <ion-item>
+      <ion-label position="stacked">Imagen (opcional)</ion-label>
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)" 
+        accept="image/*">
+      <small>Máximo 5MB - JPG, PNG, GIF</small>
     </ion-item>
 
-    <ion-button expand="block" type="submit" class="ion-margin-top">Publicar</ion-button>
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        color="medium"
+        (click)="cancelar()">
+        Cancelar
+      </ion-button>
+      
+      <ion-button 
+        expand="block" 
+        type="submit"
+        [disabled]="publicacionForm.invalid || loading">
+        {{ loading ? 'Publicando...' : 'Publicar' }}
+      </ion-button>
+    </div>
+
   </form>
 </ion-content>
-</ion-tabs>

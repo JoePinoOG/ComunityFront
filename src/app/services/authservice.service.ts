@@ -2,19 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-
-export interface Usuario {
-  username: string;
-  password: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  rol: string;
-  direccion: string;
-  telefono: string;
-  rut: string;
-  junta_vecinos: string;
-}
+import { environment } from '../../environments/environment';
+import { Usuario } from '../models';
 
 
 @Injectable({
@@ -24,7 +13,7 @@ export interface Usuario {
 
 
 export class AuthService {
-  private apiUrl = 'https://backendcomunity.onrender.com/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

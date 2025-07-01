@@ -33,7 +33,8 @@ export const routes: Routes = [
   {
     path: 'certificado-residencia',
     loadComponent: () => import('./certificado-residencia/certificado-residencia.page').then( m => m.CertificadoResidenciaPage)
-  },  {
+  },
+  {
     path: 'arriendos',
     loadComponent: () => import('./arriendos/arriendos.page').then( m => m.ArriendosPage)
   }

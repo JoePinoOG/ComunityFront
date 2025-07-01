@@ -1,27 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-
-export interface Reunion {
-  id?: number;
-  titulo: string;
-  fecha: string; // ISO 8601 format
-  lugar: string;
-  motivo: 'ORDINARIA' | 'EXTRAORDINARIA' | 'INFORMATIVA';
-}
-
-export interface ReunionResponse {
-  count?: number;
-  next?: string;
-  previous?: string;
-  results: Reunion[];
-}
+import { environment } from '../../environments/environment';
+import { Reunion, ReunionResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReunionesService {
-  private apiUrl = 'https://backendcomunity.onrender.com/api/reuniones';
+  private apiUrl = `${environment.apiUrl}/reuniones`;
   private reunionesSubject = new BehaviorSubject<Reunion[]>([]);
   public reuniones$ = this.reunionesSubject.asObservable();
 

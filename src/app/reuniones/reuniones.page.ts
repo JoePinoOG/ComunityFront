@@ -37,8 +37,9 @@ import {
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { library, playCircle, radio, search, settings, megaphone, add, calendar, location, time, people, trash, create, close, calendarClear, list } from 'ionicons/icons';
-import { ReunionesService, Reunion, ReunionResponse } from '../services/reuniones.service';
-import { AuthService, Usuario } from '../services/authservice.service';
+import { ReunionesService } from '../services/reuniones.service';
+import { AuthService } from '../services/authservice.service';
+import { Usuario, Reunion, ReunionResponse, ROLES_PERMITIDOS } from '../models';
 import { ViewChild } from '@angular/core';
 
 @Component({
@@ -335,7 +336,7 @@ export class ReunionesPage implements OnInit {
   esRolPermitido(): boolean {
     if (!this.userInfo) return false;
     const rol = this.userInfo.rol?.toUpperCase();
-    return rol === 'TESORERO' || rol === 'PRESIDENTE' || rol === 'SECRETARIO';
+    return ROLES_PERMITIDOS.includes(rol);
   }
 
   // Función para determinar si una fecha tiene reuniones (para el CSS)

@@ -1,31 +1,16 @@
-export interface Contacto {
-  id?: number;
-  nombre: string;
-  funcion: string;
-  foto: string;
-  telefono: string;
-  junta_vecinos?: string;
-}
-
-// Interface para respuestas paginadas de DRF
-export interface ContactoResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Contacto[];
-}
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './authservice.service';
+import { environment } from '../../environments/environment';
+import { Contacto, ContactoResponse } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactosService {
-  private apiUrl = 'https://backendcomunity.onrender.com/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(
     private http: HttpClient,
