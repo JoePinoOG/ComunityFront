@@ -24,6 +24,8 @@ export class LoginPage implements OnInit {
         console.log('Token recibido:', res.access); // Muestra el token en la consola
         if (res && res.access) {
           localStorage.setItem('token', res.access);
+          // Marcar que es un login reciente para mostrar el mensaje de bienvenida
+          localStorage.setItem('recentLogin', 'true');
         }
         // Redirige al home
         this.router.navigate(['/home']);

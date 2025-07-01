@@ -33,7 +33,11 @@ export class AuthService {
   return this.http.post(`${this.apiUrl}/auth/usuarios/`, data);
 }
 getProfile(): Observable<Usuario> {
-  return this.http.get<Usuario>(`${this.apiUrl}/auth/me/`); //
+  return this.http.get<Usuario>(`${this.apiUrl}/auth/me/`);
+}
+
+updateProfile(userData: Partial<Usuario>): Observable<Usuario> {
+  return this.http.put<Usuario>(`${this.apiUrl}/auth/me/`, userData);
 }
  getUserInfo(): Usuario | null {
     const token = localStorage.getItem('token');

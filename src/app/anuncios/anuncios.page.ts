@@ -18,9 +18,11 @@ import {
   IonButton
 } from '@ionic/angular/standalone';
 import { PublicacionesService } from '../services/publicaciones.service';
-import { Publicacion } from '../models';
+import { NotificationsService } from '../services/notifications.service';
+import { PublicacionMostrada, PublicacionBackend } from '../models';
+import { environment } from '../../environments/environment';
 import { addIcons } from 'ionicons';
-import { refreshOutline, timeOutline, personOutline, documentTextOutline, calendarOutline, locationOutline } from 'ionicons/icons';
+import { refreshOutline, timeOutline, personOutline, documentTextOutline, calendarOutline, locationOutline, imageOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-anuncios',
@@ -47,15 +49,17 @@ import { refreshOutline, timeOutline, personOutline, documentTextOutline, calend
   ]
 })
 export class AnunciosPage implements OnInit {
-  publicaciones: Publicacion[] = [];
+  publicaciones: PublicacionMostrada[] = [];
   loading = true;
   error: string | null = null;
 
-  constructor(private publicacionesService: PublicacionesService) {
-    addIcons({refreshOutline,documentTextOutline,timeOutline,calendarOutline,locationOutline,personOutline});
+  constructor(private publicacionesService: PublicacionesService, private notificationsService: NotificationsService) {
+    addIcons({refreshOutline,documentTextOutline,timeOutline,calendarOutline,locationOutline,imageOutline,personOutline});
   }
 
   ngOnInit() {
+    // Marcar todas las publicaciones como leídas al entrar a la página
+    this.notificationsService.markAllPublicationsAsRead();
     this.cargarPublicaciones();
   }
 
@@ -65,13 +69,11 @@ export class AnunciosPage implements OnInit {
 
     this.publicacionesService.getPublicaciones().subscribe({
       next: (response) => {
-        console.log('Publicaciones recibidas:', response);
-        
         // Manejar diferentes tipos de respuesta del backend
         if (Array.isArray(response)) {
-          this.publicaciones = response;
+          this.publicaciones = this.procesarPublicaciones(response as PublicacionBackend[]);
         } else if (response && 'results' in response) {
-          this.publicaciones = response.results;
+          this.publicaciones = this.procesarPublicaciones(response.results);
         } else {
           this.publicaciones = [];
         }
@@ -84,6 +86,13 @@ export class AnunciosPage implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private procesarPublicaciones(publicaciones: PublicacionBackend[]): PublicacionMostrada[] {
+    return publicaciones.map(pub => ({
+      ...pub,
+      imagen: pub.imagen // Imagen base64 directamente, sin procesamiento
+    }));
   }
 
   onRefresh(event: any) {

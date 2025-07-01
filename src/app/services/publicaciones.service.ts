@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Publicacion, PublicacionResponse } from '../models';
+import { NotificationsService } from './notifications.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class PublicacionesService {
   private baseUrl = `${environment.apiUrl}/publicaciones/publicaciones`;
   private publicaciones: Publicacion[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notificationsService: NotificationsService) {}
 
   // Métodos para trabajar con el backend
   getPublicaciones(): Observable<PublicacionResponse | Publicacion[]> {
@@ -22,29 +23,24 @@ export class PublicacionesService {
     console.log('Enviando publicación a:', `${this.baseUrl}/`);
     console.log('Datos de publicación:', publicacion);
     
-    // Para manejar archivos, necesitamos FormData
-    const formData = new FormData();
-    formData.append('titulo', publicacion.titulo);
-    formData.append('contenido', publicacion.contenido);
-    formData.append('tipo', publicacion.tipo);
-    
-    // Campos opcionales para eventos
-    if (publicacion.fecha_evento) {
-      formData.append('fecha_evento', publicacion.fecha_evento);
-    }
-    
-    if (publicacion.lugar_evento) {
-      formData.append('lugar_evento', publicacion.lugar_evento);
-    }
-    
-    // Agregar imagen si existe
-    if (publicacion.imagen && publicacion.imagen instanceof File) {
-      formData.append('imagen', publicacion.imagen);
-    }
+    // Preparar datos JSON con imagen base64
+    const publicacionData = {
+      titulo: publicacion.titulo,
+      contenido: publicacion.contenido,
+      tipo: publicacion.tipo,
+      ...(publicacion.fecha_evento && { fecha_evento: publicacion.fecha_evento }),
+      ...(publicacion.lugar_evento && { lugar_evento: publicacion.lugar_evento }),
+      ...(publicacion.imagen && { imagen: publicacion.imagen })
+    };
 
-    console.log('FormData preparado para envío');
+    console.log('Datos JSON preparados para envío:', publicacionData);
 
-    return this.http.post<Publicacion>(`${this.baseUrl}/`, formData);
+    return this.http.post<Publicacion>(`${this.baseUrl}/`, publicacionData).pipe(
+      tap((newPublicacion) => {
+        // Incrementar el contador de notificaciones cuando se crea una nueva publicación
+        this.notificationsService.incrementUnreadPublications();
+      })
+    );
   }
 
   updatePublicacion(id: number, publicacion: Publicacion): Observable<Publicacion> {

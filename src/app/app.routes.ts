@@ -37,7 +37,15 @@ export const routes: Routes = [
   {
     path: 'arriendos',
     loadComponent: () => import('./arriendos/arriendos.page').then( m => m.ArriendosPage)
+  },
+  {
+    path: 'perfil-usuario',
+    loadComponent: () => import('./perfil-usuario/perfil-usuario.page').then( m => m.PerfilUsuarioPage)
+  },  {
+    path: 'lista-validar-usuarios',
+    loadComponent: () => import('./lista-validar-usuarios/lista-validar-usuarios.page').then( m => m.ListaValidarUsuariosPage)
   }
+
 
 
 

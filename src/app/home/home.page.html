@@ -5,6 +5,9 @@
       <img src="assets/logo-junta-vecinos.png" alt="Logo" class="logo">
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="navigateToProfile()">
+        <ion-icon name="person-circle" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="openNotifications()">
         <ion-icon name="notifications" slot="icon-only"></ion-icon>
         <ion-badge color="danger" *ngIf="unreadNotifications > 0">{{unreadNotifications}}</ion-badge>
@@ -18,16 +21,36 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Sección de Bienvenida -->
-  <div class="welcome-section">
+  <div class="welcome-section" *ngIf="showWelcomeMessage" (click)="hideWelcomeMessage()">
     <h1>Hola, {{userInfo?.first_name }} {{ userInfo?.last_name }}</h1>
-    <p *ngIf="nextEvent">Próximo evento: {{nextEvent.title}} - {{nextEvent.date | date:'short'}}</p>
+    <p>Bienvenido al portal de la comunidad</p>
+    <small class="welcome-hint">Toca para cerrar</small>
+  </div>
+
+  <!-- Carrusel de Últimas Publicaciones -->
+  <div class="carousel-section" *ngIf="latestPosts.length > 0">
+    <ion-list-header>
+      <ion-label>Últimos Anuncios</ion-label>
+    </ion-list-header>
+    <div class="carousel-container">
+      <div class="carousel-track" #carouselTrack>
+        <div class="carousel-item" *ngFor="let post of latestPosts" (click)="viewPost(post.id)">
+          <div class="post-image">
+            <img [src]="post.imagen || 'assets/img/default-post.png'" [alt]="post.titulo">
+          </div>
+          <div class="post-content">
+            <h3>{{post.titulo}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Cards de Acceso Rápido -->
-  <ion-grid class="quick-actions">
+  <ion-grid class="quick-actions" *ngIf="hasAvailableActions()">
     <ion-row>
       <ion-col size="6" *ngFor="let action of quickActions">
-        <ion-card (click)="navigateTo(action.path)" [class.disabled]="!action.available">
+        <ion-card (click)="navigateTo(action.path)" [class.disabled]="!action.available" *ngIf="action.available">
           <ion-icon [name]="action.icon" [color]="action.color"></ion-icon>
           <ion-card-header>
             <ion-card-title>{{action.title}}</ion-card-title>
@@ -37,50 +60,21 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Card para certificados -->
+  <!-- Botón de Servicios -->
   <ion-list-header>
-  <ion-label>Servicios</ion-label>
-</ion-list-header>
-<ion-card (click)="navigateTo('/certificado-residencia')">
-  <ion-card-header>
-    <ion-card-title>Certificado de Residencia</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    Solicita tu certificado de residencia para trámites oficiales.
-  </ion-card-content>
-</ion-card>
-
-  <!-- Sección de Anuncios Recientes -->
-  <ion-list-header>
-    <ion-label>Anuncios Recientes</ion-label>
-    <ion-button fill="clear" (click)="viewAllAnnouncements()">Ver todos</ion-button>
+    <ion-label>Servicios Comunitarios</ion-label>
   </ion-list-header>
   
-  <ion-card *ngFor="let announcement of recentAnnouncements" (click)="viewAnnouncement(announcement.id)">
+  <ion-card (click)="navigateToServices()" class="services-card">
     <ion-card-header>
-      <ion-card-subtitle>{{announcement.date | date:'mediumDate'}}</ion-card-subtitle>
-      <ion-card-title>{{announcement.title}}</ion-card-title>
+      <ion-card-title>
+        <ion-icon name="apps" color="primary"></ion-icon>
+        Ver Todos los Servicios
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      {{announcement.content}}
+      Accede a certificados, solicitudes de mantenimiento, reserva de espacios y más servicios comunitarios.
     </ion-card-content>
-    <ion-badge *ngIf="announcement.isOfficial" color="primary">Oficial</ion-badge>
   </ion-card>
 
-  <!-- Próximos Eventos -->
-  <ion-list-header>
-    <ion-label>Próximos Eventos</ion-label>
-    <ion-button fill="clear" (click)="viewCalendar()">Ver calendario</ion-button>
-  </ion-list-header>
-  
-  <ion-item *ngFor="let event of upcomingEvents" (click)="viewEvent(event.id)">
-    <ion-icon slot="start" name="calendar"></ion-icon>
-    <ion-label>
-      <h3>{{event.title}}</h3>
-      <p>{{event.date | date:'medium'}} - {{event.location}}</p>
-    </ion-label>
-    <ion-button fill="outline" slot="end" (click)="setReminder($event, event.id)">
-      <ion-icon name="alarm"></ion-icon>
-    </ion-button>
-  </ion-item>
 </ion-content>

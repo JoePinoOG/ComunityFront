@@ -13,7 +13,8 @@ import {
   IonTextarea,
   IonButton,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonImg
 } from '@ionic/angular/standalone';
 import { PublicacionesService } from '../services/publicaciones.service';
 import { Publicacion, TIPOS_PUBLICACION } from '../models';
@@ -35,6 +36,7 @@ import { Publicacion, TIPOS_PUBLICACION } from '../models';
     IonButton,
     IonSelect,
     IonSelectOption,
+    IonImg,
     CommonModule,
     ReactiveFormsModule
   ]
@@ -42,6 +44,7 @@ import { Publicacion, TIPOS_PUBLICACION } from '../models';
 export class PublicarPage implements OnInit {
   publicacionForm: FormGroup;
   imagenSeleccionada: File | null = null;
+  imagenBase64: string | null = null;
   loading = false;
   tiposPublicacion = TIPOS_PUBLICACION;
 
@@ -76,6 +79,29 @@ export class PublicarPage implements OnInit {
       }
 
       this.imagenSeleccionada = file;
+      this.convertirImagenABase64(file);
+    }
+  }
+
+  private convertirImagenABase64(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagenBase64 = reader.result as string;
+    };
+    reader.onerror = () => {
+      console.error('Error al convertir imagen a base64');
+      alert('Error al procesar la imagen');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removerImagen() {
+    this.imagenSeleccionada = null;
+    this.imagenBase64 = null;
+    // Limpiar el input file
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
     }
   }
 
@@ -103,7 +129,7 @@ export class PublicarPage implements OnInit {
         titulo: formData.titulo,
         contenido: formData.contenido,
         tipo: formData.tipo,
-        imagen: this.imagenSeleccionada || undefined
+        imagen: this.imagenBase64 || undefined
       };
 
       console.log('Intentando crear publicación:', nuevaPublicacion);
@@ -150,6 +176,7 @@ export class PublicarPage implements OnInit {
     this.publicacionForm.reset();
     this.publicacionForm.patchValue({ tipo: 'ANUNCIO' });
     this.imagenSeleccionada = null;
+    this.imagenBase64 = null;
   }
 
   cancelar() {

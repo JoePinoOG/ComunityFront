@@ -53,6 +53,19 @@
       <small>Máximo 5MB - JPG, PNG, GIF</small>
     </ion-item>
 
+    <!-- Vista previa de la imagen -->
+    <div *ngIf="imagenBase64" class="imagen-preview">
+      <ion-label>Vista previa:</ion-label>
+      <img [src]="imagenBase64" alt="Vista previa de la imagen" />
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        color="danger"
+        (click)="removerImagen()">
+        Remover imagen
+      </ion-button>
+    </div>
+
     <!-- Botones de acción -->
     <div class="action-buttons">
       <ion-button 
