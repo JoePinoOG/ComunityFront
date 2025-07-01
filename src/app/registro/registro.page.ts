@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonLabel,IonModal, IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonButton, IonInput, AlertController } from '@ionic/angular/standalone';
-import { AuthService } from 'src/services/authservice.service';
+import { AuthService } from '../services/authservice.service';
 
 
 @Component({

@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
-import { PublicacionesService } from 'src/services/publicaciones.service';
+import { PublicacionesService } from '../services/publicaciones.service';
 import { addIcons } from 'ionicons';
 import { trashOutline, trashBin } from 'ionicons/icons';
 

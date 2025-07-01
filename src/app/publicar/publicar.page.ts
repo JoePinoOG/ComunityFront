@@ -12,7 +12,7 @@ import {
   IonTextarea,
   IonButton
 } from '@ionic/angular/standalone';
-import { PublicacionesService } from '../../services/publicaciones.service';
+import { PublicacionesService } from '../services/publicaciones.service';
 
 @Component({
   selector: 'app-publicar',

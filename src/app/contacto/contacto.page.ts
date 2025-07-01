@@ -21,8 +21,8 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import {logoWhatsapp, add, createOutline, trashOutline } from 'ionicons/icons';
-import { AuthService,Usuario } from 'src/app/services/authservice.service';
-import { ContactosService, Contacto } from 'src/app/services/contactos.service';
+import { AuthService,Usuario } from '../services/authservice.service';
+import { ContactosService, Contacto } from '../services/contactos.service';
 
 
 @Component({

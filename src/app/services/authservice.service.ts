@@ -1,3 +1,8 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
 export interface Usuario {
   username: string;
   password: string;
@@ -9,13 +14,7 @@ export interface Usuario {
   telefono: string;
   rut: string;
   junta_vecinos: string;
-  
 }
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
 
 
 @Injectable({
