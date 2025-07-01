@@ -68,3 +68,26 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Android
+/android/app/build/
+/android/app/release/
+/android/build/
+/android/.gradle/
+/android/gradle/
+/android/gradlew
+/android/gradlew.bat
+/android/local.properties
+/android/app/src/main/assets/public/
+/android/app/src/main/assets/capacitor.config.json
+
+# iOS (for future use)
+/ios/App/build/
+/ios/App/App.xcworkspace/xcuserdata/
+/ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+/ios/App/Pods/
+
+# Capacitor
+/ios/
+/android/
+.capacitor/

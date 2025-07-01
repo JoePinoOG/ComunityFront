@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../environments/environment';
 import { Usuario } from '../models';
+import { HttpService } from './http.service';
 
 
 @Injectable({
@@ -15,30 +16,34 @@ import { Usuario } from '../models';
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private httpService: HttpService
+  ) {}
 
 
   login(username: string, password: string) {
-    return this.http.post(`${this.apiUrl}/token/`, { username, password });
-  
+    console.log('Intentando login con:', { username, apiUrl: this.apiUrl });
+    return this.httpService.post(`${this.apiUrl}/token/`, { username, password });
   }
 
   
    refreshToken(refresh: string) {
-    return this.http.post(`${this.apiUrl}/token/refresh/`, { refresh });
+    return this.httpService.post(`${this.apiUrl}/token/refresh/`, { refresh });
   }
 
 
   register(data: Usuario): Observable<any> {
-  return this.http.post(`${this.apiUrl}/auth/usuarios/`, data);
-}
-getProfile(): Observable<Usuario> {
-  return this.http.get<Usuario>(`${this.apiUrl}/auth/me/`);
-}
+    return this.httpService.post(`${this.apiUrl}/auth/usuarios/`, data);
+  }
+  
+  getProfile(): Observable<Usuario> {
+    return this.httpService.get(`${this.apiUrl}/auth/me/`);
+  }
 
-updateProfile(userData: Partial<Usuario>): Observable<Usuario> {
-  return this.http.put<Usuario>(`${this.apiUrl}/auth/me/`, userData);
-}
+  updateProfile(userData: Partial<Usuario>): Observable<Usuario> {
+    return this.httpService.put(`${this.apiUrl}/auth/me/`, userData);
+  }
  getUserInfo(): Usuario | null {
     const token = localStorage.getItem('token');
     if (token) {

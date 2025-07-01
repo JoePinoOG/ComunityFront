@@ -19,9 +19,10 @@ export class LoginPage implements OnInit {
   
   constructor(private authService: AuthService, private router: Router) {}
   login() {
+    console.log('Iniciando proceso de login...'); // Debug
     this.authService.login(this.username, this.password).subscribe({
       next: (res: any) => {
-        console.log('Token recibido:', res.access); // Muestra el token en la consola
+        console.log('Login exitoso:', res);
         if (res && res.access) {
           localStorage.setItem('token', res.access);
           
@@ -57,14 +58,23 @@ export class LoginPage implements OnInit {
             },
             error: (err) => {
               console.error('Error al obtener el perfil:', err);
-              alert('Error al verificar el estado de la cuenta.');
+              alert('Error al verificar el estado de la cuenta. Detalles: ' + JSON.stringify(err));
               localStorage.removeItem('token');
             }
           });
         }
       },
-      error: (_err: any) => {
-        alert('Credenciales incorrectas o error de conexión');
+      error: (err: any) => {
+        console.error('Error en login:', err);
+        let errorMessage = 'Error de conexión o credenciales incorrectas';
+        
+        if (err.error && err.error.detail) {
+          errorMessage = err.error.detail;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        alert(`Error de login: ${errorMessage}`);
       }
     });
   }
