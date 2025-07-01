@@ -101,8 +101,10 @@ export class HomePage implements OnInit {
     this.authService.getProfile().subscribe({
     next: (user) => {
       this.userInfo = user;
+      console.log('Usuario obtenido:', user); // Debug
       if (user.rol) {
         this.userRole = user.rol;
+        console.log('Rol del usuario:', this.userRole); // Debug
       }
       this.initializeQuickActions();
     },
@@ -117,12 +119,14 @@ export class HomePage implements OnInit {
   }
 
   initializeQuickActions() {
+    console.log('Inicializando acciones rápidas. Rol actual:', this.userRole); // Debug
     this.quickActions = [
       { title: 'Actas', icon: 'document-text', path: '/minutes', color: 'secondary', available: true },
       { title: 'Reservar Sede', icon: 'business', path: '/book-venue', color: 'tertiary', available: true },
       { title: 'Finanzas', icon: 'cash', path: '/finances', color: 'danger', available: true },
-      { title: 'Lista usuarios', icon: 'people', path: '/user-list', color: 'primary', available: this.userRole === 'presidente' }
+      { title: 'Validar Usuarios', icon: 'people', path: '/lista-validar-usuarios', color: 'primary', available: this.userRole === 'PRESIDENTE' }
     ];
+    console.log('Acciones rápidas configuradas:', this.quickActions); // Debug
   }
 // Lógica para refrescar datos
   doRefresh(event: any) {

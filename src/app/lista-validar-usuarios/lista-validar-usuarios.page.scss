@@ -1,0 +1,227 @@
+.container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Estadísticas
+.stats-card {
+  margin-bottom: 20px;
+  
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.stat-item {
+  text-align: center;
+  padding: 8px;
+  
+  h2 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  p {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+// Lista de usuarios
+.user-item {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: var(--ion-color-light);
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.user-avatar {
+  font-size: 24px;
+  color: var(--ion-color-medium);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    font-size: 14px;
+  }
+}
+
+.user-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  ion-button {
+    --border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    min-width: 44px;
+    height: 36px;
+  }
+}
+
+// Estados vacíos y de carga
+.loading-container {
+  text-align: center;
+  padding: 40px 20px;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  
+  ion-icon {
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: var(--ion-color-success);
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+// Modal
+.modal-content {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.user-summary {
+  text-align: center;
+  padding: 20px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  
+  h3 {
+    margin: 0 0 8px 0;
+    color: var(--ion-color-dark);
+  }
+  
+  p {
+    margin: 0 0 12px 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+.character-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-top: 8px;
+  padding: 0 16px;
+}
+
+.modal-footer {
+  padding: 20px;
+  background: var(--ion-color-light);
+  
+  ion-button {
+    margin-bottom: 12px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: row;
+    
+    ion-button {
+      min-width: 40px;
+      height: 32px;
+    }
+  }
+  
+  .user-info {
+    font-size: 0.85rem;
+  }
+  
+  .stat-item h2 {
+    font-size: 1.5rem;
+  }
+}
+
+// Mejoras visuales para chips
+ion-chip {
+  font-size: 0.8rem;
+  height: 24px;
+  
+  ion-icon {
+    font-size: 12px;
+  }
+}
+
+// Animaciones
+.user-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+ion-button {
+  transition: all 0.2s ease;
+  
+  &:hover:not([disabled]) {
+    transform: translateY(-1px);
+  }
+}

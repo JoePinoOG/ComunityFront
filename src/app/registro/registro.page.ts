@@ -45,15 +45,62 @@ export class RegistroPage implements OnInit {
       rut: this.rut,
       junta_vecinos: this.junta_vecinos
     }).subscribe({
-      next: (_res: any) => {
-        console.log('Registro exitoso');
-        this.router.navigate(['/login']);
+      next: (res: any) => {
+        console.log('Registro exitoso:', res);
+        
+        // Mostrar mensaje diferente según el rol
+        if (this.rol === 'VECINO') {
+          this.showSuccessAlert(
+            'Registro Exitoso',
+            'Tu cuenta ha sido creada y aprobada automáticamente. Ya puedes iniciar sesión.',
+            true
+          );
+        } else {
+          this.showSuccessAlert(
+            'Registro Enviado',
+            `Tu solicitud de registro como ${this.rol} ha sido enviada. Tu cuenta está pendiente de aprobación por el presidente de la junta de vecinos. Recibirás una notificación una vez que sea aprobada.`,
+            false
+          );
+        }
       },
       error: (err: any) => {
         console.log('Error al registrarse:', err);
-        alert('Error al registrarse: ' + JSON.stringify(err.error));
+        let errorMessage = 'Error al registrarse.';
+        
+        if (err.error && err.error.detail) {
+          errorMessage = err.error.detail;
+        } else if (err.error) {
+          errorMessage = JSON.stringify(err.error);
+        }
+        
+        this.showErrorAlert('Error de Registro', errorMessage);
       }
     });
+  }
+
+  async showSuccessAlert(header: string, message: string, canLogin: boolean) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: [
+        {
+          text: canLogin ? 'Ir a Login' : 'Entendido',
+          handler: () => {
+            this.router.navigate(['/login']);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async showErrorAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   async openRoleModal() {

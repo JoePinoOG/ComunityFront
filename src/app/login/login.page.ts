@@ -24,11 +24,44 @@ export class LoginPage implements OnInit {
         console.log('Token recibido:', res.access); // Muestra el token en la consola
         if (res && res.access) {
           localStorage.setItem('token', res.access);
-          // Marcar que es un login reciente para mostrar el mensaje de bienvenida
-          localStorage.setItem('recentLogin', 'true');
+          
+          // Verificar el estado del usuario después del login
+          this.authService.getProfile().subscribe({
+            next: (user) => {
+              console.log('Usuario obtenido después del login:', user);
+              
+              // Verificar si el usuario está pendiente de aprobación
+              if (user.estado === 'PENDIENTE') {
+                alert('Tu cuenta está pendiente de aprobación por el presidente de la junta de vecinos. No puedes acceder hasta que sea aprobada.');
+                localStorage.removeItem('token'); // Remover el token
+                return;
+              }
+              
+              // Verificar si el usuario fue rechazado
+              if (user.estado === 'RECHAZADO') {
+                alert('Tu cuenta ha sido rechazada. Contacta al presidente de la junta de vecinos para más información.');
+                localStorage.removeItem('token'); // Remover el token
+                return;
+              }
+              
+              // Si el usuario está aprobado, continuar con el login
+              if (user.estado === 'APROBADO') {
+                // Marcar que es un login reciente para mostrar el mensaje de bienvenida
+                localStorage.setItem('recentLogin', 'true');
+                // Redirige al home
+                this.router.navigate(['/home']);
+              } else {
+                alert('Estado de cuenta no reconocido. Contacta al administrador.');
+                localStorage.removeItem('token');
+              }
+            },
+            error: (err) => {
+              console.error('Error al obtener el perfil:', err);
+              alert('Error al verificar el estado de la cuenta.');
+              localStorage.removeItem('token');
+            }
+          });
         }
-        // Redirige al home
-        this.router.navigate(['/home']);
       },
       error: (_err: any) => {
         alert('Credenciales incorrectas o error de conexión');

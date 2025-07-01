@@ -1,13 +1,202 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>lista-validar-usuarios</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Validar Usuarios</ion-title>
+    <ion-button slot="end" fill="clear" (click)="cargarDatos()" [disabled]="isLoading">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">lista-validar-usuarios</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="container">
+    <!-- Estadísticas -->
+    <ion-card *ngIf="estadisticas" class="stats-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          Estadísticas de Validación
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6" size-md="3">
+              <div class="stat-item">
+                <ion-text color="warning">
+                  <h2>{{ estadisticas.pendientes }}</h2>
+                </ion-text>
+                <p>Pendientes</p>
+              </div>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <div class="stat-item">
+                <ion-text color="success">
+                  <h2>{{ estadisticas.aprobados }}</h2>
+                </ion-text>
+                <p>Aprobados</p>
+              </div>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <div class="stat-item">
+                <ion-text color="danger">
+                  <h2>{{ estadisticas.rechazados }}</h2>
+                </ion-text>
+                <p>Rechazados</p>
+              </div>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <div class="stat-item">
+                <ion-text color="primary">
+                  <h2>{{ estadisticas.total }}</h2>
+                </ion-text>
+                <p>Total</p>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Lista de usuarios pendientes -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="time-outline"></ion-icon>
+          Usuarios Pendientes de Validación
+          <ion-badge color="warning" *ngIf="usuariosPendientes.length > 0">
+            {{ usuariosPendientes.length }}
+          </ion-badge>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="loading-container">
+          <ion-spinner></ion-spinner>
+          <p>Cargando usuarios...</p>
+        </div>
+
+        <!-- Sin usuarios pendientes -->
+        <div *ngIf="!isLoading && usuariosPendientes.length === 0" class="empty-state">
+          <ion-icon name="checkmark-circle" color="success" size="large"></ion-icon>
+          <h3>¡Excelente!</h3>
+          <p>No hay usuarios pendientes de validación</p>
+        </div>
+
+        <!-- Lista de usuarios -->
+        <ion-list *ngIf="!isLoading && usuariosPendientes.length > 0">
+          <ion-item *ngFor="let usuario of usuariosPendientes" class="user-item">
+            <div class="user-card" slot="start">
+              <ion-icon name="person-outline" class="user-avatar"></ion-icon>
+            </div>
+            
+            <ion-label>
+              <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2>
+              <p class="user-info">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ usuario.email }}
+              </p>
+              <p class="user-info">
+                <ion-icon name="id-card-outline"></ion-icon>
+                {{ usuario.rut }}
+              </p>
+              <p class="user-info">
+                <ion-icon name="home-outline"></ion-icon>
+                {{ usuario.direccion }}
+              </p>
+              <p class="user-info" *ngIf="usuario.telefono">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ usuario.telefono }}
+              </p>
+              
+              <div class="user-meta">
+                <ion-chip [color]="getRolColor(usuario.rol)">
+                  {{ getRolDisplayName(usuario.rol) }}
+                </ion-chip>
+                <ion-chip color="medium" *ngIf="usuario.tiempo_pendiente">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{ usuario.tiempo_pendiente }}
+                </ion-chip>
+              </div>
+            </ion-label>
+
+            <div slot="end" class="action-buttons">
+              <ion-button 
+                fill="solid" 
+                color="success" 
+                size="small"
+                (click)="prepararValidacion(usuario, 'APROBAR')">
+                <ion-icon name="checkmark-circle" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button 
+                fill="solid" 
+                color="danger" 
+                size="small"
+                (click)="prepararValidacion(usuario, 'RECHAZAR')">
+                <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Modal para observación -->
+  <ion-modal [isOpen]="showObservacionModal" (willDismiss)="cancelarValidacion()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ accionSeleccionada === 'RECHAZAR' ? 'Motivo del Rechazo' : 'Observaciones' }}</ion-title>
+          <ion-button slot="end" fill="clear" (click)="cancelarValidacion()">
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-button>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="modal-content">
+        <div class="modal-body">
+          <div class="user-summary" *ngIf="usuarioSeleccionado">
+            <h3>{{ usuarioSeleccionado.first_name }} {{ usuarioSeleccionado.last_name }}</h3>
+            <p>{{ usuarioSeleccionado.email }}</p>
+            <ion-chip [color]="getRolColor(usuarioSeleccionado.rol)">
+              {{ getRolDisplayName(usuarioSeleccionado.rol) }}
+            </ion-chip>
+          </div>
+
+          <ion-item>
+            <ion-label position="stacked">
+              {{ accionSeleccionada === 'RECHAZAR' ? 'Motivo del rechazo *' : 'Observaciones (opcional)' }}
+            </ion-label>
+            <ion-textarea 
+              [(ngModel)]="observacion"
+              placeholder="Escribe el motivo del rechazo o cualquier observación..."
+              rows="4"
+              maxlength="500">
+            </ion-textarea>
+          </ion-item>
+
+          <div class="character-count">
+            {{ observacion.length }}/500 caracteres
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <ion-button 
+            expand="block" 
+            [color]="accionSeleccionada === 'RECHAZAR' ? 'danger' : 'success'"
+            [disabled]="accionSeleccionada === 'RECHAZAR' && !observacion.trim()"
+            (click)="confirmarValidacionConObservacion()">
+            {{ accionSeleccionada === 'RECHAZAR' ? 'Rechazar Usuario' : 'Aprobar Usuario' }}
+          </ion-button>
+          <ion-button expand="block" fill="outline" color="medium" (click)="cancelarValidacion()">
+            Cancelar
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
