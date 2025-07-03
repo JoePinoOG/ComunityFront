@@ -1,0 +1,90 @@
+.form-buttons {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.error-message {
+  padding: 8px 16px 0;
+  
+  small {
+    color: var(--ion-color-danger);
+    font-size: 12px;
+    display: block;
+  }
+}
+
+.info-card {
+  margin-top: 16px;
+  
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-primary);
+    font-size: 16px;
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 8px;
+      color: var(--ion-color-medium-shade);
+      line-height: 1.4;
+    }
+  }
+}
+
+ion-datetime-button {
+  width: 100%;
+}
+
+ion-input[type="time"], 
+ion-input[type="number"] {
+  text-align: left;
+}
+
+// Input styling for better UX
+ion-input[type="date"],
+ion-input[type="time"] {
+  --padding-start: 0;
+  --padding-end: 0;
+  
+  input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--ion-color-dark);
+    font-size: 16px;
+    
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+// Estilos para mejorar la apariencia del formulario
+ion-item {
+  --border-radius: 8px;
+  --background: var(--ion-color-light);
+  margin-bottom: 8px;
+  --inner-padding-end: 8px;
+}
+
+ion-card {
+  --background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .form-buttons {
+    ion-button {
+      height: 48px;
+    }
+  }
+}

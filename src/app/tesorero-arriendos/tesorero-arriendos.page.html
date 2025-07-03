@@ -1,0 +1,330 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home" routerDirection="back">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-icon name="cash-outline" slot="start"></ion-icon>
+      Gestión de Arriendos - Tesorero
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Estadísticas -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="stats-card">
+          <ion-card-header>
+            <ion-card-title class="card-title-center">
+              <ion-icon name="list" color="primary"></ion-icon>
+              Resumen de Solicitudes
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4" class="stat-item">
+                  <div class="stat-number pending">{{ getSolicitudesPendientes() }}</div>
+                  <div class="stat-label">Pendientes</div>
+                </ion-col>
+                <ion-col size="4" class="stat-item">
+                  <div class="stat-number approved">{{ getSolicitudesAprobadas() }}</div>
+                  <div class="stat-label">Aprobadas</div>
+                </ion-col>
+                <ion-col size="4" class="stat-item">
+                  <div class="stat-number rejected">{{ getSolicitudesRechazadas() }}</div>
+                  <div class="stat-label">Rechazadas</div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Filtros -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="filter-card">
+          <ion-card-content>
+            <ion-segment [(ngModel)]="filterEstado" (ionChange)="onFilterChange($event)">
+              <ion-segment-button value="todas">
+                <ion-label>Todas</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="PENDIENTE">
+                <ion-label>Pendientes</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="PAGADO">
+                <ion-label>Aprobadas</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="CANCELADO">
+                <ion-label>Rechazadas</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Lista de Solicitudes -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card class="solicitudes-card">
+          <ion-card-header>
+            <ion-card-title class="card-title-center">
+              <ion-icon name="home" color="tertiary"></ion-icon>
+              Solicitudes de Arriendo ({{ solicitudesFiltradas.length }})
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list *ngIf="solicitudesFiltradas && solicitudesFiltradas.length > 0; else noSolicitudes">
+              <ion-item 
+                *ngFor="let solicitud of solicitudesFiltradas" 
+                button="true"
+                (click)="openDetailModal(solicitud)"
+                class="solicitud-item">
+                
+                <div slot="start" class="solicitud-date-badge">
+                  <div class="day">{{ solicitud.fecha_evento | date:'dd' }}</div>
+                  <div class="month">{{ solicitud.fecha_evento | date:'MMM' }}</div>
+                </div>
+                
+                <ion-label>
+                  <h2>{{ solicitud.motivo }}</h2>
+                  <h3>{{ formatDate(solicitud.fecha_evento) }}</h3>
+                  <p *ngIf="solicitud.hora_inicio && solicitud.hora_fin">
+                    {{ formatTime(solicitud.hora_inicio) }} - {{ formatTime(solicitud.hora_fin) }}
+                  </p>
+                  <p>{{ solicitud.cantidad_asistentes }} asistentes</p>
+                  <p class="solicitud-date">Solicitado: {{ formatDateTime(solicitud.fecha_solicitud || '') }}</p>
+                </ion-label>
+                
+                <div slot="end" class="status-actions">
+                  <ion-badge 
+                    [color]="getEstadoColor(solicitud.estado || 'PENDIENTE')"
+                    class="status-badge">
+                    {{ getEstadoText(solicitud.estado || 'PENDIENTE') }}
+                  </ion-badge>
+                  
+                  <!-- Botones rápidos para solicitudes pendientes -->
+                  <div *ngIf="solicitud.estado === 'PENDIENTE'" class="quick-actions">
+                    <ion-button 
+                      size="small" 
+                      fill="clear" 
+                      color="success"
+                      (click)="$event.stopPropagation(); confirmarAprobacion(solicitud, 'aprobar')">
+                      <ion-icon name="checkmark"></ion-icon>
+                    </ion-button>
+                    <ion-button 
+                      size="small" 
+                      fill="clear" 
+                      color="danger"
+                      (click)="$event.stopPropagation(); confirmarAprobacion(solicitud, 'rechazar')">
+                      <ion-icon name="close"></ion-icon>
+                    </ion-button>
+                  </div>
+                  
+                  <!-- Indicador de comprobante -->
+                  <ion-icon 
+                    *ngIf="solicitud.comprobante_pago" 
+                    name="camera" 
+                    color="primary"
+                    class="comprobante-icon">
+                  </ion-icon>
+                </div>
+              </ion-item>
+            </ion-list>
+            
+            <ng-template #noSolicitudes>
+              <div class="no-data">
+                <ion-icon name="document" size="large" color="medium"></ion-icon>
+                <h3>No hay solicitudes</h3>
+                <p>No se encontraron solicitudes con el filtro actual</p>
+              </div>
+            </ng-template>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Modal de Detalles -->
+  <ion-modal #detailModal [isOpen]="isDetailModalOpen" (willDismiss)="closeDetailModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Detalles de la Solicitud</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeDetailModal()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="modal-content" *ngIf="selectedSolicitud">
+        <div class="detail-container">
+          <!-- Header con estado -->
+          <div class="detail-header">
+            <h1>{{ selectedSolicitud.motivo }}</h1>
+            <ion-badge 
+              [color]="getEstadoColor(selectedSolicitud.estado || 'PENDIENTE')"
+              class="large-badge">
+              {{ getEstadoText(selectedSolicitud.estado || 'PENDIENTE') }}
+            </ion-badge>
+          </div>
+
+          <!-- Información del evento -->
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Información del Evento</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <ion-icon name="calendar" color="primary"></ion-icon>
+                  <span>{{ formatDate(selectedSolicitud.fecha_evento) }}</span>
+                </div>
+                <div class="detail-item" *ngIf="selectedSolicitud.hora_inicio && selectedSolicitud.hora_fin">
+                  <ion-icon name="time" color="secondary"></ion-icon>
+                  <span>{{ formatTime(selectedSolicitud.hora_inicio) }} - {{ formatTime(selectedSolicitud.hora_fin) }}</span>
+                </div>
+                <div class="detail-item">
+                  <ion-icon name="people" color="tertiary"></ion-icon>
+                  <span>{{ selectedSolicitud.cantidad_asistentes }} asistentes</span>
+                </div>
+              </div>
+              
+              <div *ngIf="selectedSolicitud.observaciones" class="observations">
+                <h4>Observaciones:</h4>
+                <ion-note>{{ selectedSolicitud.observaciones }}</ion-note>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Comprobante de pago -->
+          <ion-card *ngIf="selectedSolicitud.comprobante_pago">
+            <ion-card-header>
+              <ion-card-title>Comprobante de Pago</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="comprobante-container">
+                <ion-img 
+                  [src]="selectedSolicitud.comprobante_pago" 
+                  class="comprobante-thumbnail"
+                  (click)="openImageModal(selectedSolicitud.comprobante_pago)">
+                </ion-img>
+                <ion-button 
+                  fill="outline" 
+                  color="primary"
+                  (click)="openImageModal(selectedSolicitud.comprobante_pago)">
+                  <ion-icon name="eye" slot="start"></ion-icon>
+                  Ver Imagen Completa
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Información adicional -->
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Información de la Solicitud</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-item">
+                <strong>Fecha de solicitud:</strong>
+                <span>{{ formatDateTime(selectedSolicitud.fecha_solicitud || '') }}</span>
+              </div>
+              <div class="detail-item" *ngIf="selectedSolicitud.monto_pago">
+                <strong>Monto:</strong>
+                <span>${{ selectedSolicitud.monto_pago | number:'1.0-0' }}</span>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Acciones de aprobación -->
+          <div class="approval-actions" *ngIf="selectedSolicitud.estado === 'PENDIENTE'">
+            <ion-button 
+              expand="block" 
+              color="success"
+              (click)="confirmarAprobacion(selectedSolicitud, 'aprobar')">
+              <ion-icon name="checkmark" slot="start"></ion-icon>
+              Aprobar Solicitud
+            </ion-button>
+            
+            <ion-button 
+              expand="block" 
+              color="danger" 
+              fill="outline"
+              (click)="confirmarAprobacion(selectedSolicitud, 'rechazar')">
+              <ion-icon name="ban-outline" slot="start"></ion-icon>
+              Rechazar Solicitud
+            </ion-button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal para ver imagen completa -->
+  <ion-modal #imageModal [isOpen]="isImageModalOpen" (willDismiss)="closeImageModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Comprobante de Pago</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeImageModal()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="image-modal-content">
+        <div class="image-container">
+          <ion-img [src]="selectedImage" class="full-image"></ion-img>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Alert para confirmar aprobación/rechazo -->
+  <ion-alert
+    #approvalAlert
+    [isOpen]="isApprovalAlertOpen"
+    [header]="accionAprobacion === 'aprobar' ? 'Aprobar Solicitud' : 'Rechazar Solicitud'"
+    [message]="'¿Estás seguro de que deseas ' + (accionAprobacion === 'aprobar' ? 'aprobar' : 'rechazar') + ' esta solicitud?'"
+    [buttons]="approvalAlertButtons"
+    [inputs]="[
+      {
+        name: 'observaciones',
+        type: 'textarea',
+        placeholder: 'Observaciones (opcional)',
+        value: observacionesAprobacion
+      }
+    ]">
+  </ion-alert>
+
+  <!-- Toast para notificaciones -->
+  <ion-toast
+    [isOpen]="isToastOpen"
+    [message]="toastMessage"
+    [duration]="3000"
+    [color]="toastColor"
+    position="top"
+    (didDismiss)="isToastOpen = false">
+  </ion-toast>
+</ion-content>

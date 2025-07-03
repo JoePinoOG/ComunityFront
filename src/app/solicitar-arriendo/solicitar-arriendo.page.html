@@ -1,0 +1,140 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/arriendos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Solicitud de Arriendo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Solicitar Arriendo del Salón</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <form [formGroup]="solicitudForm" (ngSubmit)="crearSolicitud()">
+        
+        <!-- Fecha del evento -->
+        <ion-item>
+          <ion-label position="stacked">Fecha del evento *</ion-label>
+          <ion-input 
+            type="date"
+            formControlName="fecha_evento"
+            [min]="today">
+          </ion-input>
+        </ion-item>
+        <div *ngIf="fecha_evento?.invalid && fecha_evento?.touched" class="error-message">
+          <small *ngIf="fecha_evento?.errors?.['required']">La fecha del evento es requerida</small>
+        </div>
+
+        <!-- Hora de inicio -->
+        <ion-item>
+          <ion-label position="stacked">Hora de inicio *</ion-label>
+          <ion-input 
+            type="time"
+            formControlName="hora_inicio"
+            (ionBlur)="validarHorarios()">
+          </ion-input>
+        </ion-item>
+        <div *ngIf="hora_inicio?.invalid && hora_inicio?.touched" class="error-message">
+          <small *ngIf="hora_inicio?.errors?.['required']">La hora de inicio es requerida</small>
+        </div>
+
+        <!-- Hora de fin -->
+        <ion-item>
+          <ion-label position="stacked">Hora de fin *</ion-label>
+          <ion-input 
+            type="time"
+            formControlName="hora_fin"
+            (ionBlur)="validarHorarios()">
+          </ion-input>
+        </ion-item>
+        <div *ngIf="hora_fin?.invalid && hora_fin?.touched" class="error-message">
+          <small *ngIf="hora_fin?.errors?.['required']">La hora de fin es requerida</small>
+          <small *ngIf="hora_fin?.errors?.['horaInvalida']">La hora de fin debe ser posterior a la hora de inicio</small>
+        </div>
+
+        <!-- Cantidad de asistentes -->
+        <ion-item>
+          <ion-label position="stacked">Cantidad de asistentes *</ion-label>
+          <ion-input 
+            type="number"
+            formControlName="cantidad_asistentes"
+            min="1"
+            placeholder="Número de personas que asistirán">
+          </ion-input>
+        </ion-item>
+        <div *ngIf="cantidad_asistentes?.invalid && cantidad_asistentes?.touched" class="error-message">
+          <small *ngIf="cantidad_asistentes?.errors?.['required']">La cantidad de asistentes es requerida</small>
+          <small *ngIf="cantidad_asistentes?.errors?.['min']">Debe haber al menos 1 asistente</small>
+        </div>
+
+        <!-- Motivo -->
+        <ion-item>
+          <ion-label position="stacked">Motivo del evento *</ion-label>
+          <ion-textarea 
+            formControlName="motivo"
+            placeholder="Describe el motivo o tipo de evento"
+            rows="3">
+          </ion-textarea>
+        </ion-item>
+        <div *ngIf="motivo?.invalid && motivo?.touched" class="error-message">
+          <small *ngIf="motivo?.errors?.['required']">El motivo es requerido</small>
+        </div>
+
+        <!-- Observaciones -->
+        <ion-item>
+          <ion-label position="stacked">Observaciones adicionales</ion-label>
+          <ion-textarea 
+            formControlName="observaciones"
+            placeholder="Información adicional sobre el evento (opcional)"
+            rows="2">
+          </ion-textarea>
+        </ion-item>
+
+        <!-- Botones -->
+        <div class="form-buttons">
+          <ion-button 
+            expand="block" 
+            type="submit" 
+            [disabled]="solicitudForm.invalid || loading"
+            color="primary">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            {{ loading ? 'Enviando...' : 'Enviar Solicitud' }}
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="medium"
+            (click)="cancelar()"
+            [disabled]="loading">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            Cancelar
+          </ion-button>
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Información adicional -->
+  <ion-card class="info-card">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Información importante
+      </ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ul>
+        <li>Las solicitudes están sujetas a aprobación</li>
+        <li>No se permiten eventos simultáneos en el mismo horario</li>
+        <li>El pago se realiza una vez aprobada la solicitud</li>
+        <li>Recibirás una notificación sobre el estado de tu solicitud</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -121,8 +121,8 @@ export class HomePage implements OnInit {
   initializeQuickActions() {
     console.log('Inicializando acciones rápidas. Rol actual:', this.userRole); // Debug
     this.quickActions = [
-      { title: 'Actas', icon: 'document-text', path: '/minutes', color: 'secondary', available: true },
-      { title: 'Reservar Sede', icon: 'business', path: '/book-venue', color: 'tertiary', available: true },
+      { title: 'Arriendos', icon: 'business', path: '/arriendos', color: 'tertiary', available: true },
+      { title: 'Gestión Arriendos', icon: 'cash', path: '/tesorero-arriendos', color: 'success', available: this.userRole === 'TESORERO' },
       { title: 'Finanzas', icon: 'cash', path: '/finances', color: 'danger', available: true },
       { title: 'Validar Usuarios', icon: 'people', path: '/lista-validar-usuarios', color: 'primary', available: this.userRole === 'PRESIDENTE' }
     ];

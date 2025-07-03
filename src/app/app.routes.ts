@@ -41,12 +41,17 @@ export const routes: Routes = [
   {
     path: 'perfil-usuario',
     loadComponent: () => import('./perfil-usuario/perfil-usuario.page').then( m => m.PerfilUsuarioPage)
-  },  {
+  },
+  {
     path: 'lista-validar-usuarios',
     loadComponent: () => import('./lista-validar-usuarios/lista-validar-usuarios.page').then( m => m.ListaValidarUsuariosPage)
+  },
+  {
+    path: 'solicitar-arriendo',
+    loadComponent: () => import('./solicitar-arriendo/solicitar-arriendo.page').then( m => m.SolicitarArriendoPage)
+  },
+  {
+    path: 'tesorero-arriendos',
+    loadComponent: () => import('./tesorero-arriendos/tesorero-arriendos.page').then( m => m.TesoreroArriendosPage)
   }
-
-
-
-
 ];
