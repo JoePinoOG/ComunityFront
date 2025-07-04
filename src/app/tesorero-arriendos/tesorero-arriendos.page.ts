@@ -28,9 +28,6 @@ import {
   IonNote,
   IonSegment,
   IonSegmentButton,
-  IonSelect,
-  IonSelectOption,
-  IonTextarea,
   IonToast
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
@@ -49,7 +46,10 @@ import {
   warning,
   refresh,
   cashOutline,
-  banOutline, arrowBack } from 'ionicons/icons';
+  banOutline, 
+  arrowBack, 
+  checkmarkCircle 
+} from 'ionicons/icons';
 import { ArriendosService } from '../services/arriendos.service';
 import { AuthService } from '../services/authservice.service';
 import { SolicitudArriendo, Usuario, ROLES_PERMITIDOS } from '../models';
@@ -89,9 +89,6 @@ import { SolicitudArriendo, Usuario, ROLES_PERMITIDOS } from '../models';
     IonNote,
     IonSegment,
     IonSegmentButton,
-    IonSelect,
-    IonSelectOption,
-    IonTextarea,
     IonToast
   ]
 })
@@ -116,6 +113,7 @@ export class TesoreroArriendosPage implements OnInit {
   // Observaciones para aprobar/rechazar
   observacionesAprobacion: string = '';
   accionAprobacion: 'aprobar' | 'rechazar' = 'aprobar';
+  montoAprobacion: number = 50000; // Monto por defecto
 
   // Alert buttons configuration
   approvalAlertButtons = [
@@ -141,7 +139,7 @@ export class TesoreroArriendosPage implements OnInit {
     private arriendosService: ArriendosService,
     private authService: AuthService
   ) {
-    addIcons({arrowBack,cashOutline,list,home,checkmark,close,camera,document,calendar,time,people,eye,banOutline,warning,refresh});
+    addIcons({arrowBack,cashOutline,list,home,checkmark,close,camera,document,calendar,time,people,eye,banOutline,warning,checkmarkCircle,refresh});
   }
 
   ngOnInit() {
@@ -234,16 +232,16 @@ export class TesoreroArriendosPage implements OnInit {
   procesarAprobacion() {
     if (!this.selectedSolicitud?.id) return;
 
-    const nuevoEstado: 'PAGADO' | 'CANCELADO' = this.accionAprobacion === 'aprobar' ? 'PAGADO' : 'CANCELADO';
-    const updateData: Partial<SolicitudArriendo> = {
-      estado: nuevoEstado,
-      observaciones: this.observacionesAprobacion || this.selectedSolicitud.observaciones
+    const data = {
+      accion: this.accionAprobacion === 'aprobar' ? 'APROBAR' as const : 'RECHAZAR' as const,
+      observaciones: this.observacionesAprobacion || (this.accionAprobacion === 'aprobar' ? 'Aprobado por tesorero' : 'Rechazado por tesorero'),
+      ...(this.accionAprobacion === 'aprobar' && this.montoAprobacion && { monto_pago: this.montoAprobacion })
     };
 
-    this.arriendosService.updateSolicitud(this.selectedSolicitud.id, updateData).subscribe({
-      next: () => {
+    this.arriendosService.aprobarSolicitud(this.selectedSolicitud.id, data).subscribe({
+      next: (response) => {
         const accionTexto = this.accionAprobacion === 'aprobar' ? 'aprobada' : 'rechazada';
-        console.log(`Solicitud ${accionTexto} exitosamente`);
+        console.log(`Solicitud ${accionTexto} exitosamente:`, response);
         
         // Mostrar toast de éxito
         this.toastMessage = `Solicitud ${accionTexto} exitosamente`;
@@ -268,6 +266,7 @@ export class TesoreroArriendosPage implements OnInit {
   getEstadoColor(estado: string): string {
     switch (estado) {
       case 'PENDIENTE': return 'warning';
+      case 'APROBADO': return 'primary';
       case 'PAGADO': return 'success';
       case 'CANCELADO': return 'danger';
       default: return 'medium';
@@ -277,7 +276,8 @@ export class TesoreroArriendosPage implements OnInit {
   getEstadoText(estado: string): string {
     switch (estado) {
       case 'PENDIENTE': return 'Pendiente';
-      case 'PAGADO': return 'Aprobado';
+      case 'APROBADO': return 'Aprobado';
+      case 'PAGADO': return 'Pagado';
       case 'CANCELADO': return 'Rechazado';
       default: return estado;
     }
@@ -319,10 +319,53 @@ export class TesoreroArriendosPage implements OnInit {
   }
 
   getSolicitudesAprobadas(): number {
+    return this.solicitudes.filter(s => s.estado === 'APROBADO').length;
+  }
+
+  getSolicitudesPagadas(): number {
     return this.solicitudes.filter(s => s.estado === 'PAGADO').length;
   }
 
   getSolicitudesRechazadas(): number {
     return this.solicitudes.filter(s => s.estado === 'CANCELADO').length;
+  }
+
+  // Marcar solicitud como pagada
+  marcarComoPagado(solicitud: SolicitudArriendo) {
+    if (!solicitud.id) return;
+
+    this.arriendosService.marcarPagado(solicitud.id).subscribe({
+      next: (response) => {
+        this.toastMessage = 'Solicitud marcada como pagada exitosamente';
+        this.toastColor = 'success';
+        this.isToastOpen = true;
+        this.loadSolicitudes();
+        this.closeDetailModal();
+      },
+      error: (error) => {
+        console.error('Error al marcar como pagado:', error);
+        this.toastMessage = 'Error al marcar como pagado';
+        this.toastColor = 'danger';
+        this.isToastOpen = true;
+      }
+    });
+  }
+
+  // Verificar si se puede marcar como pagado
+  puedeMarcarPagado(solicitud: SolicitudArriendo): boolean {
+    return solicitud.estado === 'APROBADO' && (solicitud.tiene_comprobante || false);
+  }
+
+  // Cargar estadísticas (opcional)
+  loadEstadisticas() {
+    this.arriendosService.getEstadisticas().subscribe({
+      next: (stats) => {
+        console.log('Estadísticas de arriendos:', stats);
+        // Aquí podrías mostrar las estadísticas en la UI
+      },
+      error: (error) => {
+        console.error('Error al cargar estadísticas:', error);
+      }
+    });
   }
 }

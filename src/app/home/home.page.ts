@@ -101,10 +101,8 @@ export class HomePage implements OnInit {
     this.authService.getProfile().subscribe({
     next: (user) => {
       this.userInfo = user;
-      console.log('Usuario obtenido:', user); // Debug
       if (user.rol) {
         this.userRole = user.rol;
-        console.log('Rol del usuario:', this.userRole); // Debug
       }
       this.initializeQuickActions();
     },
@@ -121,10 +119,10 @@ export class HomePage implements OnInit {
   initializeQuickActions() {
     console.log('Inicializando acciones rápidas. Rol actual:', this.userRole); // Debug
     this.quickActions = [
-      { title: 'Arriendos', icon: 'business', path: '/arriendos', color: 'tertiary', available: true },
-      { title: 'Gestión Arriendos', icon: 'cash', path: '/tesorero-arriendos', color: 'success', available: this.userRole === 'TESORERO' },
-      { title: 'Finanzas', icon: 'cash', path: '/finances', color: 'danger', available: true },
-      { title: 'Validar Usuarios', icon: 'people', path: '/lista-validar-usuarios', color: 'primary', available: this.userRole === 'PRESIDENTE' }
+      { title: 'Arrendar sede', icon: 'business', path: '/arriendos', color: 'tertiary', available: true },
+      { title: 'Gestión Arriendos', icon: 'cash', path: '/tesorero-arriendos', color: 'success', available: this.userRole !== 'VECINO' },
+      { title: 'Finanzas', icon: 'cash', path: '/finances', color: 'danger', available: this.userRole !== 'VECINO' },
+      { title: 'Validar Usuarios', icon: 'people', path: '/lista-validar-usuarios', color: 'primary', available: this.userRole !== 'VECINO' }
     ];
     console.log('Acciones rápidas configuradas:', this.quickActions); // Debug
   }
@@ -190,6 +188,10 @@ export class HomePage implements OnInit {
     }
   }
 
+  hasAvailableActions(): boolean {
+    return this.quickActions.some(action => action.available);
+  }
+
   navigateTo(path: string) {
     if (this.quickActions.find(a => a.path === path)?.available) {
       this.router.navigateByUrl(path);
@@ -198,10 +200,6 @@ export class HomePage implements OnInit {
 
   navigateToProfile() {
     this.router.navigate(['/perfil-usuario']);
-  }
-
-  hasAvailableActions(): boolean {
-    return this.quickActions.some(action => action.available);
   }
 
   navigateToServices() {

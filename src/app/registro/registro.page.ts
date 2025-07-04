@@ -125,10 +125,7 @@ export class RegistroPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Selecciona una Junta de Vecinos',
       inputs: [
-        { name: 'junta', type: 'radio', label: '1', value: '1', checked: this.junta_vecinos === '1' },
-        { name: 'junta', type: 'radio', label: '2', value: '2', checked: this.junta_vecinos === '2' },
-        { name: 'junta', type: 'radio', label: '3', value: '3', checked: this.junta_vecinos === '3' },
-        { name: 'junta', type: 'radio', label: '4', value: '4', checked: this.junta_vecinos === '4' }
+        { name: 'junta', type: 'radio', label: '1', value: '1', checked: this.junta_vecinos === 'Lo varela' }
       ],
       buttons: [
         {

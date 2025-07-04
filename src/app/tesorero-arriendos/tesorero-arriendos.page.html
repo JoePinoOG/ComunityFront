@@ -65,8 +65,11 @@
               <ion-segment-button value="PENDIENTE">
                 <ion-label>Pendientes</ion-label>
               </ion-segment-button>
-              <ion-segment-button value="PAGADO">
+              <ion-segment-button value="APROBADO">
                 <ion-label>Aprobadas</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="PAGADO">
+                <ion-label>Pagadas</ion-label>
               </ion-segment-button>
               <ion-segment-button value="CANCELADO">
                 <ion-label>Rechazadas</ion-label>
@@ -137,13 +140,26 @@
                     </ion-button>
                   </div>
                   
-                  <!-- Indicador de comprobante -->
-                  <ion-icon 
-                    *ngIf="solicitud.comprobante_pago" 
-                    name="camera" 
-                    color="primary"
-                    class="comprobante-icon">
-                  </ion-icon>
+                  <!-- Indicadores de estado -->
+                  <div class="status-indicators">
+                    <!-- Indicador de comprobante -->
+                    <ion-icon 
+                      *ngIf="solicitud.comprobante_pago" 
+                      name="camera" 
+                      color="primary"
+                      class="comprobante-icon"
+                      title="Tiene comprobante de pago">
+                    </ion-icon>
+                    
+                    <!-- Indicador de solicitudes aprobadas que pueden marcarse como pagadas -->
+                    <ion-icon 
+                      *ngIf="puedeMarcarPagado(solicitud)" 
+                      name="cash-outline" 
+                      color="success"
+                      class="payment-ready-icon"
+                      title="Listo para marcar como pagado">
+                    </ion-icon>
+                  </div>
                 </div>
               </ion-item>
             </ion-list>
@@ -273,6 +289,37 @@
               <ion-icon name="ban-outline" slot="start"></ion-icon>
               Rechazar Solicitud
             </ion-button>
+          </div>
+
+          <!-- Acciones para solicitudes aprobadas -->
+          <div class="payment-actions" *ngIf="selectedSolicitud.estado === 'APROBADO'">
+            <ion-button 
+              expand="block" 
+              color="primary"
+              [disabled]="!puedeMarcarPagado(selectedSolicitud)"
+              (click)="marcarComoPagado(selectedSolicitud)">
+              <ion-icon name="cash-outline" slot="start"></ion-icon>
+              Marcar como Pagado
+            </ion-button>
+            <ion-note *ngIf="!selectedSolicitud.comprobante_pago" color="warning">
+              <ion-icon name="warning" size="small"></ion-icon>
+              Se requiere comprobante de pago para marcar como pagado
+            </ion-note>
+          </div>
+
+          <!-- Información de pago para solicitudes pagadas -->
+          <div class="payment-info" *ngIf="selectedSolicitud.estado === 'PAGADO'">
+            <ion-card color="success">
+              <ion-card-content>
+                <div class="payment-status">
+                  <ion-icon name="checkmark-circle" color="light" size="large"></ion-icon>
+                  <h3>Solicitud Pagada</h3>
+                  <p *ngIf="selectedSolicitud.fecha_pago">
+                    Pagado el: {{ formatDateTime(selectedSolicitud.fecha_pago) }}
+                  </p>
+                </div>
+              </ion-card-content>
+            </ion-card>
           </div>
         </div>
       </ion-content>

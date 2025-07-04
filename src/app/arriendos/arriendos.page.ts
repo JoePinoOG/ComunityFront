@@ -278,6 +278,11 @@ export class ArriendosPage implements OnInit {
   }
 
   saveSolicitud() {
+    console.log('=== DEBUG SOLICITUD ===');
+    console.log('Datos originales del formulario:', this.newSolicitud);
+    console.log('Tipo de hora_inicio:', typeof this.newSolicitud.hora_inicio, this.newSolicitud.hora_inicio);
+    console.log('Tipo de hora_fin:', typeof this.newSolicitud.hora_fin, this.newSolicitud.hora_fin);
+    
     if (this.isEditMode && this.newSolicitud.id) {
       this.arriendosService.updateSolicitud(this.newSolicitud.id, this.newSolicitud).subscribe({
         next: () => {
@@ -286,19 +291,158 @@ export class ArriendosPage implements OnInit {
         },
         error: (error) => {
           console.error('Error al actualizar solicitud:', error);
+          console.error('Detalles del error:', error.error);
         }
       });
     } else {
-      this.arriendosService.createSolicitud(this.newSolicitud).subscribe({
+      // Preparar los datos para envío con formateo correcto
+      const solicitudData = this.formatSolicitudData(this.newSolicitud);
+      
+      console.log('Datos formateados para enviar:', solicitudData);
+      console.log('=== FIN DEBUG ===');
+      
+      this.arriendosService.createSolicitud(solicitudData as SolicitudArriendo).subscribe({
         next: () => {
           this.loadSolicitudes();
           this.closeModal();
         },
         error: (error) => {
           console.error('Error al crear solicitud:', error);
+          console.error('Detalles del error:', error.error);
         }
       });
     }
+  }
+
+  private formatSolicitudData(solicitud: SolicitudArriendo): any {
+    console.log('formatSolicitudData - solicitud original:', JSON.stringify(solicitud, null, 2));
+    
+    // Formatear fecha (YYYY-MM-DD)
+    let fechaEvento = '';
+    if (solicitud.fecha_evento) {
+      const fecha = new Date(solicitud.fecha_evento);
+      fechaEvento = fecha.toISOString().split('T')[0];
+    }
+
+    // Las horas ya deberían estar en formato HH:MM:SS desde los event handlers
+    const horaInicio = solicitud.hora_inicio || '';
+    const horaFin = solicitud.hora_fin || '';
+
+    console.log('Hora inicio:', horaInicio, 'tipo:', typeof horaInicio);
+    console.log('Hora fin:', horaFin, 'tipo:', typeof horaFin);
+    
+    // Validar que las horas no estén vacías
+    if (!horaInicio || !horaFin) {
+      console.error('Error: horas no pueden estar vacías');
+      throw new Error('Las horas de inicio y fin son requeridas');
+    }
+    
+    // Validar que sean strings (no arrays ni otros tipos)
+    if (typeof horaInicio !== 'string' || typeof horaFin !== 'string') {
+      console.error('Error: las horas deben ser strings, recibidos:', typeof horaInicio, typeof horaFin);
+      throw new Error('Error interno: formato de hora inválido');
+    }
+    
+    // Validar formato de hora HH:MM:SS
+    const timeRegex = /^\d{2}:\d{2}:\d{2}$/;
+    if (!timeRegex.test(horaInicio) || !timeRegex.test(horaFin)) {
+      console.error('Error: formato de hora inválido - horaInicio:', horaInicio, 'horaFin:', horaFin);
+      throw new Error('Las horas deben estar en formato HH:MM:SS');
+    }
+
+    const formattedData = {
+      fecha_evento: fechaEvento,
+      hora_inicio: horaInicio,
+      hora_fin: horaFin,
+      motivo: solicitud.motivo?.trim() || '',
+      cantidad_asistentes: Number(solicitud.cantidad_asistentes) || 1,
+      observaciones: solicitud.observaciones?.trim() || ''
+    };
+    
+    console.log('formatSolicitudData - datos finales:', JSON.stringify(formattedData, null, 2));
+    
+    return formattedData;
+  }
+
+  // Métodos específicos para manejar cambios de hora desde ion-datetime
+  onHoraInicioChange(event: any): void {
+    const value = event.detail?.value;
+    console.log('onHoraInicioChange - valor recibido:', value, 'tipo:', typeof value);
+    
+    this.newSolicitud.hora_inicio = this.extractTimeString(value);
+    console.log('hora_inicio asignada:', this.newSolicitud.hora_inicio);
+  }
+
+  onHoraFinChange(event: any): void {
+    const value = event.detail?.value;
+    console.log('onHoraFinChange - valor recibido:', value, 'tipo:', typeof value);
+    
+    this.newSolicitud.hora_fin = this.extractTimeString(value);
+    console.log('hora_fin asignada:', this.newSolicitud.hora_fin);
+  }
+
+  private extractTimeString(timeValue: any): string {
+    console.log('extractTimeString recibió:', timeValue, 'tipo:', typeof timeValue);
+    
+    if (!timeValue) {
+      return '';
+    }
+
+    // Si es un string, verificar si es una fecha ISO
+    if (typeof timeValue === 'string') {
+      try {
+        // Si contiene 'T', es un datetime ISO
+        if (timeValue.includes('T')) {
+          const date = new Date(timeValue);
+          if (!isNaN(date.getTime())) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            const result = `${hours}:${minutes}:${seconds}`;
+            console.log('Extraído desde datetime ISO:', result);
+            return result;
+          }
+        }
+        
+        // Si ya es formato HH:MM o HH:MM:SS, normalizarlo
+        const timeRegex = /^(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/;
+        const match = timeValue.match(timeRegex);
+        if (match) {
+          const hours = parseInt(match[1]).toString().padStart(2, '0');
+          const minutes = parseInt(match[2]).toString().padStart(2, '0');
+          const seconds = match[3] ? parseInt(match[3]).toString().padStart(2, '0') : '00';
+          
+          if (parseInt(hours) >= 0 && parseInt(hours) <= 23 && 
+              parseInt(minutes) >= 0 && parseInt(minutes) <= 59) {
+            const result = `${hours}:${minutes}:${seconds}`;
+            console.log('Normalizado formato hora:', result);
+            return result;
+          }
+        }
+      } catch (error) {
+        console.error('Error procesando timeValue string:', error);
+      }
+    }
+
+    console.warn('No se pudo extraer hora válida de:', timeValue);
+    return '';
+  }
+
+  private formatTimeString(timeValue: any): string {
+    // Este método ahora es más simple porque los valores ya deberían estar normalizados
+    if (!timeValue || typeof timeValue !== 'string') {
+      console.warn('formatTimeString: valor inválido:', timeValue);
+      return '';
+    }
+
+    // Validar que ya esté en formato HH:MM:SS
+    const timeRegex = /^\d{2}:\d{2}:\d{2}$/;
+    if (timeRegex.test(timeValue)) {
+      return timeValue;
+    }
+
+    console.warn('formatTimeString: formato inválido:', timeValue);
+    return '';
   }
 
   confirmDelete(solicitud: SolicitudArriendo) {
@@ -350,6 +494,7 @@ export class ArriendosPage implements OnInit {
   getEstadoColor(estado: string): string {
     switch (estado) {
       case 'PENDIENTE': return 'warning';
+      case 'APROBADO': return 'primary';
       case 'PAGADO': return 'success';
       case 'CANCELADO': return 'danger';
       default: return 'medium';
@@ -359,6 +504,7 @@ export class ArriendosPage implements OnInit {
   getEstadoText(estado: string): string {
     switch (estado) {
       case 'PENDIENTE': return 'Pendiente';
+      case 'APROBADO': return 'Aprobado';
       case 'PAGADO': return 'Pagado';
       case 'CANCELADO': return 'Cancelado';
       default: return estado;
@@ -407,14 +553,40 @@ export class ArriendosPage implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result as string;
-      this.newSolicitud.comprobante_pago = base64String;
+      this.newSolicitud.comprobante_pago_base64 = base64String;
+      console.log('Archivo convertido a base64');
     };
     reader.readAsDataURL(file);
   }
 
   subirComprobante(solicitud: SolicitudArriendo) {
-    this.openImageSelector();
-    // El comprobante se guardará cuando se cierre el modal y se guarde la solicitud
+    if (!solicitud.id) return;
+    
+    const input = window.document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.convertFileToBase64(file);
+        // Después de convertir, llamar al servicio
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result as string;
+          this.arriendosService.subirComprobantePago(solicitud.id!, base64String).subscribe({
+            next: (response) => {
+              console.log('Comprobante subido exitosamente');
+              this.loadSolicitudes(); // Recargar para ver cambios
+            },
+            error: (error) => {
+              console.error('Error al subir comprobante:', error);
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
   }
 
   doRefresh(event: any) {
@@ -480,4 +652,84 @@ export class ArriendosPage implements OnInit {
     };
     this.selectedFile = null;
   }
+
+  // Aprobar solicitud (solo admins)
+  aprobarSolicitud(solicitud: SolicitudArriendo) {
+    if (!solicitud.id) return;
+
+    const data = {
+      accion: 'APROBAR' as const,
+      monto_pago: 50000, // Valor por defecto, debería ser configurable
+      observaciones: 'Solicitud aprobada'
+    };
+
+    this.arriendosService.aprobarSolicitud(solicitud.id, data).subscribe({
+      next: (response) => {
+        console.log('Solicitud aprobada:', response);
+        this.loadSolicitudes();
+      },
+      error: (error) => {
+        console.error('Error al aprobar solicitud:', error);
+      }
+    });
+  }
+
+  // Rechazar solicitud (solo admins)
+  rechazarSolicitud(solicitud: SolicitudArriendo) {
+    if (!solicitud.id) return;
+
+    const data = {
+      accion: 'RECHAZAR' as const,
+      observaciones: 'Solicitud rechazada por el administrador'
+    };
+
+    this.arriendosService.aprobarSolicitud(solicitud.id, data).subscribe({
+      next: (response) => {
+        console.log('Solicitud rechazada:', response);
+        this.loadSolicitudes();
+      },
+      error: (error) => {
+        console.error('Error al rechazar solicitud:', error);
+      }
+    });
+  }
+
+  // Marcar como pagado (solo admins)
+  marcarComoPagado(solicitud: SolicitudArriendo) {
+    if (!solicitud.id) return;
+
+    this.arriendosService.marcarPagado(solicitud.id).subscribe({
+      next: (response) => {
+        console.log('Marcado como pagado:', response);
+        this.loadSolicitudes();
+      },
+      error: (error) => {
+        console.error('Error al marcar como pagado:', error);
+      }
+    });
+  }
+
+  // Verificar si la solicitud puede ser aprobada
+  puedeAprobar(solicitud: SolicitudArriendo): boolean {
+    return solicitud.estado === 'PENDIENTE' && this.esRolPermitido();
+  }
+
+  // Verificar si la solicitud puede ser marcada como pagada
+  puedeMarcarPagado(solicitud: SolicitudArriendo): boolean {
+    return solicitud.estado === 'APROBADO' && this.esRolPermitido() && (solicitud.tiene_comprobante || false);
+  }
+
+  // Mostrar información de disponibilidad
+  mostrarDisponibilidad(fecha: string) {
+    this.arriendosService.getDisponibilidad(fecha).subscribe({
+      next: (response) => {
+        console.log('Disponibilidad para', fecha, ':', response);
+        // Aquí podrías mostrar un modal o alerta con la información
+      },
+      error: (error) => {
+        console.error('Error al obtener disponibilidad:', error);
+      }
+    });
+  }
+
 }

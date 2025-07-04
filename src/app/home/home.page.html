@@ -2,7 +2,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <img src="assets/logo-junta-vecinos.png" alt="Logo" class="logo">
+      <img src="assets/comunitylogo.png" alt="Logo" class="logo">
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="navigateToProfile()">
@@ -47,10 +47,10 @@
   </div>
 
   <!-- Cards de Acceso Rápido -->
-  <ion-grid class="quick-actions" *ngIf="hasAvailableActions()">
+  <ion-grid class="quick-actions">
     <ion-row>
       <ion-col size="6" *ngFor="let action of quickActions">
-        <ion-card (click)="navigateTo(action.path)" [class.disabled]="!action.available" *ngIf="action.available">
+        <ion-card (click)="navigateTo(action.path)" *ngIf="action.available">
           <ion-icon [name]="action.icon" [color]="action.color"></ion-icon>
           <ion-card-header>
             <ion-card-title>{{action.title}}</ion-card-title>
