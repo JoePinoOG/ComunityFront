@@ -83,7 +83,7 @@
         <!-- Footer con autor si está disponible -->
         <div *ngIf="publicacion.autor" class="autor-info">
           <ion-icon name="person-outline" size="small" color="medium"></ion-icon>
-          <span>Autor ID: {{ publicacion.autor }}</span>
+          <span>{{ getAutorNombre(publicacion.autor) }}</span>
         </div>
       </ion-card-content>
     </ion-card>

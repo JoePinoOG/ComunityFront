@@ -142,4 +142,18 @@ export class AnunciosPage implements OnInit {
     };
     return colores[tipo] || 'medium';
   }
+
+  // Función para obtener el nombre del autor
+  getAutorNombre(autor: any): string {
+    if (!autor) return 'Autor desconocido';
+    
+    // Si autor es un objeto con información del usuario
+    if (typeof autor === 'object' && autor !== null) {
+      const firstName = autor.first_name || '';
+      const lastName = autor.last_name || '';
+      return `${firstName} ${lastName}`.trim() || 'Usuario';
+    }
+    
+    return 'Usuario';
+  }
 }

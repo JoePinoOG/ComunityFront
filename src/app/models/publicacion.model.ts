@@ -1,3 +1,12 @@
+// Interfaz para información del autor
+export interface AutorInfo {
+  id?: number;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+}
+
 export interface Publicacion {
   id?: number;
   titulo: string;
@@ -5,7 +14,7 @@ export interface Publicacion {
   tipo: TipoPublicacion;
   estado?: EstadoPublicacion;
   imagen?: string; // Ahora siempre string (base64)
-  autor?: number; // ID del autor
+  autor?: number | AutorInfo; // Puede ser ID o objeto con info del autor
   fecha_creacion?: string;
   fecha_modificacion?: string;
   fecha_evento?: string;
@@ -23,7 +32,7 @@ export interface PublicacionBackend {
   tipo: TipoPublicacion;
   estado?: EstadoPublicacion;
   imagen?: string;
-  autor?: number;
+  autor?: number | AutorInfo; // Puede ser ID o objeto con info del autor
   fecha_creacion?: string;
   fecha_modificacion?: string;
   fecha_evento?: string;
@@ -41,7 +50,7 @@ export interface PublicacionMostrada {
   tipo: TipoPublicacion;
   estado?: EstadoPublicacion;
   imagen?: string;
-  autor?: number;
+  autor?: number | AutorInfo; // Puede ser ID o objeto con info del autor
   fecha_creacion?: string;
   fecha_modificacion?: string;
   fecha_evento?: string;
